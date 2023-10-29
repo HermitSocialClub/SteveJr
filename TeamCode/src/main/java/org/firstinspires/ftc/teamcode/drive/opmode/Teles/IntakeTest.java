@@ -22,11 +22,11 @@ public class IntakeTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                intakeOne.setPower(0.65);
-                intakeTwo.setPower(-0.65);
+                intakeOne.setPower(0.75);
+                intakeTwo.setPower(-0.75);
             }else if (gamepad1.b){
-                intakeOne.setPower(-0.75);
-                intakeTwo.setPower(0.75);
+                intakeOne.setPower(-0.6);
+                intakeTwo.setPower(0.6);
             }else if (gamepad1.x){
                 intakeOne.setPower(1);
                 intakeTwo.setPower(-1);
