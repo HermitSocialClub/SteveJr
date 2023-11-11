@@ -26,17 +26,24 @@ public class MeetZB1 extends LinearOpMode {
     @Override
 
     public void runOpMode() throws InterruptedException {
-    left_drive = hardwareMap.get(DcMotor.class, "left_drive") ;
-    left_drive_2 = hardwareMap.get(DcMotor.class, "left_drive_2") ;
-    right_drive = hardwareMap.get(DcMotor.class, "right_drive") ;
-    right_drive_2= hardwareMap.get(DcMotor.class, "right_drive_2") ;
+    left_drive = hardwareMap.get(DcMotor.class, "left_drive");
+    left_drive_2 = hardwareMap.get(DcMotor.class, "left_drive_2");
+    right_drive = hardwareMap.get(DcMotor.class, "right_drive");
+    right_drive_2= hardwareMap.get(DcMotor.class, "right_drive_2");
+        left_drive.setDirection(DcMotor.Direction.REVERSE);
+//        right_drive_2 = hardwareMap.get(DcMotor.class,"right_drive_2");
+        left_drive_2.setDirection(DcMotor.Direction.REVERSE);
+        right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right_drive_2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left_drive_2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     waitForStart();
     if (isStopRequested())return;
 
     while (opModeIsActive()){
 
-        goGo(0.5,60);
+        moveToPosition(0.1,60);
 
     }
 
@@ -61,7 +68,7 @@ public class MeetZB1 extends LinearOpMode {
         //
         left_drive.setPower(speed);
         right_drive.setPower(speed);
-        left_drive_2.setPower(speed);
+        left_drive_2.setPower(speed*0.5);
         right_drive_2.setPower(speed);
         //
         while (left_drive.isBusy() && left_drive_2.isBusy() && right_drive.isBusy() && right_drive_2.isBusy()){
