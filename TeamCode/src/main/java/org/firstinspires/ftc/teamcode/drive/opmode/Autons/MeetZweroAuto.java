@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @Autonomous (name = "MeetZweroAuto")
 public class MeetZweroAuto extends LinearOpMode {
 
-    SiddyDetector detector = new SiddyDetector();
+    SiddyDetector detector = new SiddyDetector(hardwareMap, telemetry);
 
     @Override
     public void runOpMode() throws InterruptedException {

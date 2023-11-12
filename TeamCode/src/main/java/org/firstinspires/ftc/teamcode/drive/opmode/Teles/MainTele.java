@@ -104,12 +104,12 @@ public class MainTele extends LinearOpMode {
 
 
 
-            if (gamepad1.a) {
-                precisionMode = !precisionMode;
-                precisionModifier = precisionMode ? 1 : 0.5;
-                telemetry.speak((precisionMode ? "precision" : "speed"));
-                telemetry.addLine((precisionMode ? "ON" : "OFF"));
-            }
+//            if (gamepad1.a) {
+//                precisionMode = !precisionMode;
+//                precisionModifier = precisionMode ? 1 : 0.5;
+//                telemetry.speak((precisionMode ? "precision" : "speed"));
+//                telemetry.addLine((precisionMode ? "ON" : "OFF"));
+//            }
 
             if (gamepad1.a) {
                 precisionMode = true;
@@ -130,22 +130,23 @@ public class MainTele extends LinearOpMode {
                     double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
                     double denominator2 = Math.max(Math.abs(y) + Math.abs(x2) + Math.abs(rx), 1);
 
-            if (precisionMode = true){
+            if (gamepad1.left_trigger > 0.5){
+                driveRightPower = (((y - x - rx) / denominator) * 0.9);
+                driveRight2Power = (((y + x - rx) / denominator) * 0.9);
+                driveLeftPower = (((y + x + rx) / denominator) * 0.9);
+                driveLeft2Power = (((y - x + rx) / denominator) * 0.9);
+            } else {
                 driveRightPower = (((y - x - rx) / denominator) * 0.5);
                 driveRight2Power = (((y + x - rx) / denominator) * 0.5);
                 driveLeftPower = (((y + x + rx) / denominator) * 0.5);
                 driveLeft2Power = (((y - x + rx) / denominator) * 0.5);
-            } else if (precisionMode = false){
-                driveRightPower = (((y - x - rx) / denominator) * 0.75);
-                driveRight2Power = (((y + x - rx) / denominator) * 0.75);
-                driveLeftPower = (((y + x + rx) / denominator) * 0.75);
-                driveLeft2Power = (((y - x + rx) / denominator) * 0.75);
-            } else {
-                driveRightPower = (((y - x - rx) / denominator) * 0.75);
-                driveRight2Power = (((y + x - rx) / denominator) * 0.75);
-                driveLeftPower = (((y + x + rx) / denominator) * 0.75);
-                driveLeft2Power = (((y - x + rx) / denominator) * 0.75);
             }
+//            else {
+//                driveRightPower = (((y - x - rx) / denominator) * 0.75);
+//                driveRight2Power = (((y + x - rx) / denominator) * 0.75);
+//                driveLeftPower = (((y + x + rx) / denominator) * 0.75);
+//                driveLeft2Power = (((y - x + rx) / denominator) * 0.75);
+//            }
 
 //                    driveRightPower = (((y - x - rx) / denominator) * precisionModifier);
 //                    driveRight2Power = (((y + x - rx) / denominator) * precisionModifier);
@@ -159,23 +160,28 @@ public class MainTele extends LinearOpMode {
                     linear.setPower(gamepad2.left_stick_y);
                     susPension.setPower(gamepad2.right_stick_y);
 
-                    if (gamepad2.right_trigger > 0.5){
-                        intakeOne.setPower(1);
-                        intakeTwo.setPower(-1);
-                    } else if (gamepad2.left_trigger > 0.5){
-                        intakeOne.setPower(-1);
-                        intakeTwo.setPower(1);
-                    }else {
-                        intakeOne.setPower(0);
-                        intakeTwo.setPower(0);
-                    }
+//                    if (gamepad2.right_trigger > 0.5){
+//                        intakeOne.setPower(1);
+//                        intakeTwo.setPower(-1);
+//                    } else if (gamepad2.left_trigger > 0.5){
+//                        intakeOne.setPower(-1);
+//                        intakeTwo.setPower(1);
+//                    }else {
+//                        intakeOne.setPower(0);
+//                        intakeTwo.setPower(0);
+//                    }
 
                     if (gamepad1.left_trigger > 0.5){
                         ramp.setPosition(0);
-                    }else if (gamepad1.right_trigger > 0.5){
-                        ramp.setPosition(1);
+                        intakeOne.setPower(1);
+                        intakeTwo.setPower(-1);
                     } else {
                         ramp.setPosition(0.2);
+                    }
+
+                    if (gamepad1.x){
+                        intakeOne.setPower(-1);
+                        intakeTwo.setPower(1);
                     }
 
 

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Autons;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -15,7 +18,7 @@ public class SiddyDetector extends OpenCvPipeline {
         NONE
     }
     public SiddyPosition location;
-    public SiddyDetector()
+    public SiddyDetector(HardwareMap hardwareMap, Telemetry telemetry)
     {
     }
 
