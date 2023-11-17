@@ -16,10 +16,9 @@ import com.qualcomm.robotcore.util.WebHandlerManager;
 
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants;
+import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
+import org.firstinspires.ftc.teamcode.drive.BigElliotLocalizer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,53 +47,38 @@ public final class LogFiles {
         public long nsInit = System.nanoTime();
         public long nsStart, nsStop;
 
-        public double ticksPerRev = DriveConstants.TICKS_PER_REV;
-        public double maxRpm = DriveConstants.MAX_RPM;
-        public boolean runUsingEncoder = DriveConstants.RUN_USING_ENCODER;
-        public double motorP = DriveConstants.MOTOR_VELO_PID.p;
-        public double motorI = DriveConstants.MOTOR_VELO_PID.i;
-        public double motorD = DriveConstants.MOTOR_VELO_PID.d;
-        public double motorF = DriveConstants.MOTOR_VELO_PID.f;
-        public double wheelRadius = DriveConstants.WHEEL_RADIUS;
-        public double gearRatio = DriveConstants.GEAR_RATIO;
-        public double trackWidth = DriveConstants.TRACK_WIDTH;
-        public double kV = DriveConstants.kV;
-        public double kA = DriveConstants.kA;
-        public double kStatic = DriveConstants.kStatic;
-        public double maxVel = DriveConstants.MAX_VEL;
-        public double maxAccel = DriveConstants.MAX_ACCEL;
-        public double maxAngVel = DriveConstants.MAX_ANG_VEL;
-        public double maxAngAccel = DriveConstants.MAX_ANG_ACCEL;
+        public double ticksPerRev = ElliotDriveConstants.TICKS_PER_REV;
+        public double maxRpm = ElliotDriveConstants.MAX_RPM;
+        public boolean runUsingEncoder = ElliotDriveConstants.RUN_USING_ENCODER;
+        public double motorP = ElliotDriveConstants.MOTOR_VELO_PID.p;
+        public double motorI = ElliotDriveConstants.MOTOR_VELO_PID.i;
+        public double motorD = ElliotDriveConstants.MOTOR_VELO_PID.d;
+        public double motorF = ElliotDriveConstants.MOTOR_VELO_PID.f;
+        public double wheelRadius = ElliotDriveConstants.WHEEL_RADIUS;
+        public double gearRatio = ElliotDriveConstants.GEAR_RATIO;
+        public double trackWidth = ElliotDriveConstants.TRACK_WIDTH;
+        public double kV = ElliotDriveConstants.kV;
+        public double kA = ElliotDriveConstants.kA;
+        public double kStatic = ElliotDriveConstants.kStatic;
+        public double maxVel = ElliotDriveConstants.MAX_VEL;
+        public double maxAccel = ElliotDriveConstants.MAX_ACCEL;
+        public double maxAngVel = ElliotDriveConstants.MAX_ANG_VEL;
+        public double maxAngAccel = ElliotDriveConstants.MAX_ANG_ACCEL;
 
-        public double mecTransP = SampleMecanumDrive.TRANSLATIONAL_PID.kP;
-        public double mecTransI = SampleMecanumDrive.TRANSLATIONAL_PID.kI;
-        public double mecTransD = SampleMecanumDrive.TRANSLATIONAL_PID.kD;
-        public double mecHeadingP = SampleMecanumDrive.HEADING_PID.kP;
-        public double mecHeadingI = SampleMecanumDrive.HEADING_PID.kI;
-        public double mecHeadingD = SampleMecanumDrive.HEADING_PID.kD;
-        public double mecLateralMultiplier = SampleMecanumDrive.LATERAL_MULTIPLIER;
-
-        public double tankAxialP = SampleTankDrive.AXIAL_PID.kP;
-        public double tankAxialI = SampleTankDrive.AXIAL_PID.kI;
-        public double tankAxialD = SampleTankDrive.AXIAL_PID.kD;
-        public double tankCrossTrackP = SampleTankDrive.CROSS_TRACK_PID.kP;
-        public double tankCrossTrackI = SampleTankDrive.CROSS_TRACK_PID.kI;
-        public double tankCrossTrackD = SampleTankDrive.CROSS_TRACK_PID.kD;
-        public double tankHeadingP = SampleTankDrive.HEADING_PID.kP;
-        public double tankHeadingI = SampleTankDrive.HEADING_PID.kI;
-        public double tankHeadingD = SampleTankDrive.HEADING_PID.kD;
-
-        public double trackingTicksPerRev = StandardTrackingWheelLocalizer.TICKS_PER_REV;
-        public double trackingWheelRadius = StandardTrackingWheelLocalizer.WHEEL_RADIUS;
-        public double trackingGearRatio = StandardTrackingWheelLocalizer.GEAR_RATIO;
-        public double trackingLateralDistance = StandardTrackingWheelLocalizer.LATERAL_DISTANCE;
-        public double trackingForwardOffset = StandardTrackingWheelLocalizer.FORWARD_OFFSET;
-
-        public RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR = DriveConstants.LOGO_FACING_DIR;
-        public RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR = DriveConstants.USB_FACING_DIR;
+        public double mecTransP = ElliotDrive.TRANSLATIONAL_PID.kP;
+        public double mecTransI = ElliotDrive.TRANSLATIONAL_PID.kI;
+        public double mecTransD = ElliotDrive.TRANSLATIONAL_PID.kD;
+        public double mecHeadingP = ElliotDrive.HEADING_PID.kP;
+        public double mecHeadingI = ElliotDrive.HEADING_PID.kI;
+        public double mecHeadingD = ElliotDrive.HEADING_PID.kD;
+        public double mecLateralMultiplier = ElliotDrive.LATERAL_MULTIPLIER;
+        public double trackingTicksPerRev = BigElliotLocalizer.TICKS_PER_REV;
+        public double trackingWheelRadius = BigElliotLocalizer.WHEEL_RADIUS;
+        public double trackingGearRatio = BigElliotLocalizer.GEAR_RATIO;
+        public double trackingLateralDistance = BigElliotLocalizer.LATERAL_DISTANCE;
+        public double trackingForwardOffset = BigElliotLocalizer.FORWARD_OFFSET;
 
         public List<Long> nsTimes = new ArrayList<>();
-
         public List<Double> targetXs = new ArrayList<>();
         public List<Double> targetYs = new ArrayList<>();
         public List<Double> targetHeadings = new ArrayList<>();

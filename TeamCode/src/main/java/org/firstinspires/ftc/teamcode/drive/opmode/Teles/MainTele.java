@@ -172,11 +172,13 @@ public class MainTele extends LinearOpMode {
 //                    }
 
                     if (gamepad1.left_trigger > 0.5){
-                        ramp.setPosition(0);
+                        ramp.setPosition(0.45);
                         intakeOne.setPower(1);
                         intakeTwo.setPower(-1);
                     } else {
-                        ramp.setPosition(0.2);
+                        ramp.setPosition(0.3);
+                        intakeOne.setPower(0);
+                        intakeTwo.setPower(0);
                     }
 
                     if (gamepad1.x){

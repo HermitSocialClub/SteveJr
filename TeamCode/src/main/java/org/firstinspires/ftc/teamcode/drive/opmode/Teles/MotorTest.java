@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
 
 @TeleOp (name = "MotorTest")
 public class MotorTest extends LinearOpMode {
+    ElliotDrive drive;
     DcMotor right_drive;
     DcMotor right_drive_2;
     DcMotor left_drive;
@@ -14,40 +16,41 @@ public class MotorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-
-        left_drive = hardwareMap.get(DcMotor.class, "left_drive") ;
-        left_drive_2 = hardwareMap.get(DcMotor.class, "left_drive_2") ;
-        right_drive = hardwareMap.get(DcMotor.class, "right_drive") ;
-        right_drive_2= hardwareMap.get(DcMotor.class, "right_drive_2") ;
-        right_drive.setDirection(DcMotor.Direction.REVERSE);
-//        right_drive_2 = hardwareMap.get(DcMotor.class,"right_drive_2");
-        right_drive_2.setDirection(DcMotor.Direction.REVERSE);
+        drive = new ElliotDrive(hardwareMap);
+//        left_drive = hardwareMap.get(DcMotor.class, "leftFront") ;
+//        left_drive_2 = hardwareMap.get(DcMotor.class, "leftRear") ;
+//        right_drive = hardwareMap.get(DcMotor.class, "rightFront") ;
+//        right_drive_2= hardwareMap.get(DcMotor.class, "rightRear") ;
+//        right_drive.setDirection(DcMotor.Direction.REVERSE);
+//        left_drive.setDirection();
+////        right_drive_2 = hardwareMap.get(DcMotor.class,"right_drive_2");
+//        right_drive_2.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
             if (gamepad1.a){
-                left_drive.setPower(0.5);
+                drive.leftFront.setPower(0.5);
             } else {
-                left_drive.setPower(0);
+                drive.leftFront.setPower(0);
             }
             if (gamepad1.b){
-                left_drive_2.setPower(0.5);
+                drive.leftRear.setPower(0.5);
             } else {
-                left_drive_2.setPower(0);
+                drive.leftRear.setPower(0);
             }
             if (gamepad1.x){
-                right_drive.setPower(0.5);
+                drive.rightFront.setPower(0.5);
             }else {
-                right_drive.setPower(0);
+                drive.rightFront.setPower(0);
             }
             if (gamepad1.y){
-                right_drive_2.setPower(0.5);
+                drive.rightRear.setPower(0.5);
             }else {
-                right_drive_2.setPower(0);
+                drive.rightRear.setPower(0);
             }
-            left_drive.setPower(gamepad1.left_stick_x);
+//            left_drive.setPower(gamepad1.left_stick_x);
         }
         }
     }

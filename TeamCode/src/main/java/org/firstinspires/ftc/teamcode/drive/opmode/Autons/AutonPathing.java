@@ -6,18 +6,18 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.MeetOneMecanum;
+import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
 
 @Autonomous (name = "AutonPathing")
 public class AutonPathing extends LinearOpMode {
 
-    public MeetOneMecanum drive;
+    public ElliotDrive drive;
    // SiddyDetector vision;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        MeetOneMecanum drive = new MeetOneMecanum(hardwareMap);
+        ElliotDrive drive = new ElliotDrive(hardwareMap);
        // vision = new SiddyDetector(hardwareMap,telemetry);
 
         Pose2d starting = new Pose2d(35, -60, Math.toRadians(90));

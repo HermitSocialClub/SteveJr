@@ -92,8 +92,6 @@ public class MeetOneDriveConstants {
     public static double MAX_ANG_VEL = Math.toRadians(195.767325);
     public static double MAX_ANG_ACCEL = Math.toRadians(195.767325);
 
-    public static DcMotorSimple.Direction[] DIRECTIONS = new DcMotorSimple.Direction[]{DcMotorSimple.Direction.FORWARD, DcMotorSimple.Direction.FORWARD,
-            DcMotorSimple.Direction.REVERSE, DcMotorSimple.Direction.REVERSE};
 
 
     public static double encoderTicksToInches(double ticks) {
