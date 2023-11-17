@@ -37,8 +37,8 @@ public class BigElliotLocalizer extends ThreeTrackingWheelLocalizer {
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
-    public static double X_MULTIPLIER = 1.1842277768035364475126080994785;//1.16478891;//1.1789434231942163742767495919684; //1.1984116723897806122422375510251;//1.1; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.185488775491431291833819295636;//1.172556299; //1.3744240831501428399787453475807;//1.20537; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
     public BigElliotLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
