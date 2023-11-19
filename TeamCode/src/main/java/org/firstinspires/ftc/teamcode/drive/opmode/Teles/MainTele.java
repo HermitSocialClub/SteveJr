@@ -3,16 +3,17 @@ package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp (name = "MainTele")
 public class MainTele extends LinearOpMode {
 
-    DcMotor left_drive;
-    DcMotor right_drive;
-    DcMotor left_drive_2;
-    DcMotor right_drive_2;
+    DcMotor leftFront;
+    DcMotor rightFront;
+    DcMotor leftRear;
+    DcMotor rightRear;
     DcMotor linear;
     double x;
     double x2;
@@ -30,25 +31,35 @@ public class MainTele extends LinearOpMode {
     DcMotor intakeOne;
     DcMotor intakeTwo;
     Servo ramp;
+    Servo trap;
+    Servo poleGrabber;
     ElapsedTime runtime = new ElapsedTime();
+   // ElliotDrive drive;
   //  double linearPower;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        left_drive = hardwareMap.get(DcMotor.class, "left_drive");
-        left_drive_2 = hardwareMap.get(DcMotor.class, "left_drive_2");
-        right_drive = hardwareMap.get(DcMotor.class, "right_drive");
-        right_drive_2 = hardwareMap.get(DcMotor.class, "right_drive_2");
-        right_drive = hardwareMap.get(DcMotor.class, "right_drive");
-        linear = hardwareMap.get(DcMotor.class, "linear");
-        susPension = hardwareMap.get(DcMotor.class, "suspension");
-        intakeOne = hardwareMap.get(DcMotor.class, "intakeOne");
-        intakeTwo = hardwareMap.get(DcMotor.class, "intakeTwo");
+      // drive = new ElliotDrive(hardwareMap);
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotor.class, "leftRear");
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        rightRear = hardwareMap.get(DcMotor.class, "rightRear");
+       // rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        linear = hardwareMap.get(DcMotor.class, "linears");
+        susPension = hardwareMap.get(DcMotor.class, "susPension");
+        intakeOne = hardwareMap.get(DcMotor.class, "intakeLeft");
+        intakeTwo = hardwareMap.get(DcMotor.class, "intakeRight");
         ramp = hardwareMap.get(Servo.class, "ramp");
+        trap = hardwareMap.get(Servo.class, "trap");
+        poleGrabber = hardwareMap.get(Servo.class, "poleGrabber");
+
        // claw = hardwareMap.get(Servo.class, "claw");
-        right_drive.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
 //        right_drive_2 = hardwareMap.get(DcMotor.class,"right_drive_2");
-        right_drive_2.setDirection(DcMotor.Direction.REVERSE);
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        linear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        right_drive_2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        left_drive = hardwareMap.get(DcMotor.class,"left_drive");
 //        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -130,7 +141,7 @@ public class MainTele extends LinearOpMode {
                     double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
                     double denominator2 = Math.max(Math.abs(y) + Math.abs(x2) + Math.abs(rx), 1);
 
-            if (gamepad1.left_trigger > 0.5){
+            if (gamepad1.left_bumper){
                 driveRightPower = (((y - x - rx) / denominator) * 0.9);
                 driveRight2Power = (((y + x - rx) / denominator) * 0.9);
                 driveLeftPower = (((y + x + rx) / denominator) * 0.9);
@@ -138,7 +149,7 @@ public class MainTele extends LinearOpMode {
             } else {
                 driveRightPower = (((y - x - rx) / denominator) * 0.5);
                 driveRight2Power = (((y + x - rx) / denominator) * 0.5);
-                driveLeftPower = (((y + x + rx) / denominator) * 0.5);
+                driveLeftPower = (((y + x + rx) / denominator) * 0.6);
                 driveLeft2Power = (((y - x + rx) / denominator) * 0.5);
             }
 //            else {
@@ -153,10 +164,10 @@ public class MainTele extends LinearOpMode {
 //                    driveLeftPower = (((y + x + rx) / denominator) * precisionModifier);
 //                    driveLeft2Power = (((y - x + rx) / denominator) * precisionModifier);
 
-                    left_drive.setPower(driveLeftPower);
-                    left_drive_2.setPower(driveLeft2Power);
-                    right_drive.setPower(driveRightPower);
-                    right_drive_2.setPower(driveRight2Power);
+                    leftFront.setPower(driveLeftPower);
+                    leftRear.setPower(driveLeft2Power);
+                    rightFront.setPower(driveRightPower);
+                    rightRear.setPower(driveRight2Power);
                     linear.setPower(gamepad2.left_stick_y);
                     susPension.setPower(gamepad2.right_stick_y);
 
@@ -172,13 +183,18 @@ public class MainTele extends LinearOpMode {
 //                    }
 
                     if (gamepad1.left_trigger > 0.5){
-                        ramp.setPosition(0.45);
-                        intakeOne.setPower(1);
-                        intakeTwo.setPower(-1);
+                        ramp.setPosition(0.51);
+                      //  intakeOne.setPower(1);
+                     //   intakeTwo.setPower(-1);
                     } else {
-                        ramp.setPosition(0.3);
+                        ramp.setPosition(0.46);
                         intakeOne.setPower(0);
                         intakeTwo.setPower(0);
+                    }
+
+                    if (gamepad1.right_trigger > 0.5){
+                        intakeOne.setPower(1);
+                        intakeTwo.setPower(-1);
                     }
 
                     if (gamepad1.x){
@@ -186,6 +202,33 @@ public class MainTele extends LinearOpMode {
                         intakeTwo.setPower(1);
                     }
 
+//                    if (gamepad2.left_trigger > 0.5){
+//                        trap.setPosition(1);
+//                    } else {
+//                        trap.setPosition(0.5);
+//                    }
+
+//                    if (gamepad2.a){
+//                        trap.setPosition(1);
+//                    } else if (gamepad2.b){
+//                        trap.setPosition(0.7);
+//                    } else if (gamepad2.x){
+//                        trap.setPosition(0);
+//                    } else if (gamepad2.y){
+//                        trap.setPosition(0.4);
+//                    }
+
+                    if (gamepad2.right_trigger > 0.5){
+                        poleGrabber.setPosition(0);
+                    } else {
+                        poleGrabber.setPosition(0.7);
+                    }
+
+            if (gamepad2.left_bumper){
+                trap.setPosition(0.4);
+            } else {
+                trap.setPosition(0.7);
+            }
 
 //                    if (gamepad2.left_bumper) {
 //                        // claw.setPower(-1);

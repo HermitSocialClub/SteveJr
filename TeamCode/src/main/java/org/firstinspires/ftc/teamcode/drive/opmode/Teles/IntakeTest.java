@@ -3,37 +3,36 @@ package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp (name = "IntakeTest")
 public class IntakeTest extends LinearOpMode {
-    public DcMotor intakeOne;
+    public DcMotor intakeRight;
 
-    public DcMotor intakeTwo;
+    public DcMotor intakeLeft;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        intakeOne = hardwareMap.get(DcMotor.class, "intakeOne");
-        intakeTwo = hardwareMap.get(DcMotor.class, "intakeTwo");
+        intakeRight = hardwareMap.get(DcMotor.class, "intakeRight");
+        intakeLeft = hardwareMap.get(DcMotor.class, "intakeLeft");
 
         waitForStart();
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                intakeOne.setPower(0.75);
-                intakeTwo.setPower(-0.75);
+                intakeRight.setPower(-1);
+                intakeLeft.setPower(1);
             }else if (gamepad1.b){
-                intakeOne.setPower(-0.6);
-                intakeTwo.setPower(0.6);
+                intakeRight.setPower(-0.6);
+                intakeLeft.setPower(0.6);
             }else if (gamepad1.x){
-                intakeOne.setPower(1);
-                intakeTwo.setPower(-1);
+                intakeRight.setPower(1);
+                intakeLeft.setPower(-1);
             }
             else {
-                intakeOne.setPower(0);
-                intakeTwo.setPower(0);
+                intakeRight.setPower(0);
+                intakeLeft.setPower(0);
             }
 
         }
