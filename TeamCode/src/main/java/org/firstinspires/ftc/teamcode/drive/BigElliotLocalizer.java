@@ -29,11 +29,11 @@ import java.util.List;
 @Config
 public class BigElliotLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = .69; // in
+    public static double WHEEL_RADIUS = .688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 16;//14.25; //8.75; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 2; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 16.5;//14.25; //8.75; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -4; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 

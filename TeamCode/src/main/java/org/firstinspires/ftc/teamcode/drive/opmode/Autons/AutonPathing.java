@@ -25,6 +25,7 @@ public class AutonPathing extends LinearOpMode {
 
         Trajectory toMiddleSpike = drive.trajectoryBuilder(new Pose2d(starting.vec(),m(90)),m(90))
                 .splineTo(new Vector2d(35,-35),m(90))
+                .back(6)
                 .build();
 
         Trajectory backToStartMiddle = drive.trajectoryBuilder(toMiddleSpike.end())
@@ -46,6 +47,10 @@ public class AutonPathing extends LinearOpMode {
         Trajectory backToStartRight = drive.trajectoryBuilder(toRightSpike.end())
                 .splineToSplineHeading(new Pose2d(35,-60,m(0)),m(90))
                 .build();
+
+        waitForStart();
+            if(isStopRequested()) return;
+            drive.followTrajectory(toMiddleSpike);
 
     }
 
