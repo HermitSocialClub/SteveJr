@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
 import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 
 /**
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        ElliotDrive drive = new ElliotDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -27,9 +28,9 @@ public class LocalizationTest extends LinearOpMode {
         while (!isStopRequested()) {
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 0.6 : 0.4),
+                            -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 0.6 : 0.4),
                             -(((Math.abs(gamepad1.left_stick_x) < .2) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 0.6 : 0.4),
-                            -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * 0.7 * (gamepad1.right_trigger > 0.05 ? 0.8 : 0.4)
+                            -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * 0.7 * (gamepad1.right_trigger > 0.05 ? 0.8 : 0.4)
                     )
             );
 

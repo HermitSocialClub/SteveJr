@@ -5,12 +5,11 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 
 import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
 
-@Autonomous (name = "MeetZB1")
-public class MeetZB1 extends LinearOpMode {
+@Autonomous (name = "MeetZB1ParkGunwook")
+public class MeetZB1Park extends LinearOpMode {
 
     DcMotor left_drive;
     DcMotor right_drive;
@@ -43,14 +42,14 @@ public class MeetZB1 extends LinearOpMode {
 //        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        right_drive_2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        left_drive_2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Trajectory pleaseGoForwardIAmLiterallyPraying1 = drive.trajectoryBuilder(new Pose2d(35,-60))
-                .forward(25)
-                .back(6)
+        Trajectory pleaseGoForwardIAmLiterallyPraying = drive.trajectoryBuilder(new Pose2d(35,-60))
+                .forward(44)
+                //.back(6)
                 .build();
 
     waitForStart();
     if (isStopRequested())return;
-        drive.followTrajectory(pleaseGoForwardIAmLiterallyPraying1);
+        drive.followTrajectory(pleaseGoForwardIAmLiterallyPraying);
 
 
 //    while (opModeIsActive()){

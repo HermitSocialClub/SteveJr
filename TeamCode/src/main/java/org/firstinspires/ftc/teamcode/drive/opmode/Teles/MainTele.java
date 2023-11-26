@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -33,6 +34,8 @@ public class MainTele extends LinearOpMode {
     Servo ramp;
     Servo trap;
     Servo poleGrabber;
+    CRServo plane;
+  //  double suspensionSpeed;
     ElapsedTime runtime = new ElapsedTime();
    // ElliotDrive drive;
   //  double linearPower;
@@ -52,6 +55,7 @@ public class MainTele extends LinearOpMode {
         ramp = hardwareMap.get(Servo.class, "ramp");
         trap = hardwareMap.get(Servo.class, "trap");
         poleGrabber = hardwareMap.get(Servo.class, "poleGrabber");
+        plane = hardwareMap.get(CRServo.class, "plane");
 
        // claw = hardwareMap.get(Servo.class, "claw");
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -144,13 +148,13 @@ public class MainTele extends LinearOpMode {
             if (gamepad1.left_bumper){
                 driveRightPower = (((y - x - rx) / denominator) * 0.9);
                 driveRight2Power = (((y + x - rx) / denominator) * 0.9);
-                driveLeftPower = (((y + x + rx) / denominator) * 0.9);
+                driveLeftPower = (((y + x + rx) / denominator) * 0.95);
                 driveLeft2Power = (((y - x + rx) / denominator) * 0.9);
             } else {
-                driveRightPower = (((y - x - rx) / denominator) * 0.5);
-                driveRight2Power = (((y + x - rx) / denominator) * 0.5);
-                driveLeftPower = (((y + x + rx) / denominator) * 0.6);
-                driveLeft2Power = (((y - x + rx) / denominator) * 0.5);
+                driveRightPower = (((y - x - rx) / denominator) * 0.8);
+                driveRight2Power = (((y + x - rx) / denominator) * 0.8);
+                driveLeftPower = (((y + x + rx) / denominator) * 0.9);
+                driveLeft2Power = (((y - x + rx) / denominator) * 0.8);
             }
 //            else {
 //                driveRightPower = (((y - x - rx) / denominator) * 0.75);
@@ -163,6 +167,14 @@ public class MainTele extends LinearOpMode {
 //                    driveRight2Power = (((y + x - rx) / denominator) * precisionModifier);
 //                    driveLeftPower = (((y + x + rx) / denominator) * precisionModifier);
 //                    driveLeft2Power = (((y - x + rx) / denominator) * precisionModifier);
+
+//            if (gamepad2.right_stick_y >= 0.1){
+//                suspensionSpeed = 1;
+//            } if (gamepad2.right_stick_y <= -0.1) {
+//                suspensionSpeed = -1;
+//            } else {
+//                suspensionSpeed = 0;
+//            }
 
                     leftFront.setPower(driveLeftPower);
                     leftRear.setPower(driveLeft2Power);
@@ -183,7 +195,7 @@ public class MainTele extends LinearOpMode {
 //                    }
 
                     if (gamepad1.left_trigger > 0.5){
-                        ramp.setPosition(0.51);
+                        ramp.setPosition(0.42 );
                       //  intakeOne.setPower(1);
                      //   intakeTwo.setPower(-1);
                     } else {
@@ -193,8 +205,8 @@ public class MainTele extends LinearOpMode {
                     }
 
                     if (gamepad1.right_trigger > 0.5){
-                        intakeOne.setPower(1);
-                        intakeTwo.setPower(-1);
+                        intakeOne.setPower(0.9);
+                        intakeTwo.setPower(-0.9);
                     }
 
                     if (gamepad1.x){
@@ -219,15 +231,21 @@ public class MainTele extends LinearOpMode {
 //                    }
 
                     if (gamepad2.right_trigger > 0.5){
-                        poleGrabber.setPosition(0);
+                        poleGrabber.setPosition(0.75);
                     } else {
-                        poleGrabber.setPosition(0.7);
+                        poleGrabber.setPosition(0);
                     }
 
-            if (gamepad2.left_bumper){
-                trap.setPosition(0.4);
-            } else {
+            if (gamepad2.left_trigger > 0.3){
                 trap.setPosition(0.7);
+            } else {
+                trap.setPosition(0.2);
+            }
+
+            if (gamepad2.left_bumper){
+                plane.setPower(1);
+            } else {
+                plane.setPower(0);
             }
 
 //                    if (gamepad2.left_bumper) {

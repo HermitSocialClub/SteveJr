@@ -32,6 +32,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -80,6 +81,8 @@ public class ElliotDrive extends MecanumDrive {
     public Servo ramp;
     public DcMotorEx susPension;
     public Servo trap;
+    public Servo poleGrabber;
+    public CRServo plane;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -130,16 +133,18 @@ public class ElliotDrive extends MecanumDrive {
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftRear");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightRear");
         linears = hardwareMap.get(DcMotorEx.class, "linears");
         intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
-        intakeRight = hardwareMap.get(DcMotorEx.cl  ass, "intakeRight");
+        intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
         ramp = hardwareMap.get(Servo.class,"ramp");
         susPension = hardwareMap.get(DcMotorEx.class, "susPension");
         trap = hardwareMap.get(Servo.class, "trap");
+        poleGrabber = hardwareMap.get(Servo.class, "poleGrabber");
+        plane = hardwareMap.get(CRServo.class, "plane");
 
         linears.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
