@@ -28,15 +28,21 @@ import java.util.List;
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 0;
-    public static double WHEEL_RADIUS = 2; // in
+    public static double WHEEL_RADIUS = 0.688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 4; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 16.5; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -4; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     private List<Integer> lastEncPositions, lastEncVels;
+
+    public static double PARALLEL_X = 0; // X is the forward and back direction
+    public static double PARALLEL_Y = 0; // Y is the strafe direction
+
+    public static double PERPENDICULAR_X = 0; // X is the forward and back direction
+    public static double PERPENDICULAR_Y = 0; // Y is the strafe direction
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap, List<Integer> lastTrackingEncPositions, List<Integer> lastTrackingEncVels) {
         super(Arrays.asList(
@@ -55,9 +61,11 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
 
+
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
+
 
     @NonNull
     @Override

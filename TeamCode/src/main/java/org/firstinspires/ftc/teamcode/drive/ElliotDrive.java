@@ -136,7 +136,7 @@ public class ElliotDrive extends MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         linears = hardwareMap.get(DcMotorEx.class, "linears");
         intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
-        intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
+        intakeRight = hardwareMap.get(DcMotorEx.cl  ass, "intakeRight");
         ramp = hardwareMap.get(Servo.class,"ramp");
         susPension = hardwareMap.get(DcMotorEx.class, "susPension");
         trap = hardwareMap.get(Servo.class, "trap");
@@ -144,6 +144,7 @@ public class ElliotDrive extends MecanumDrive {
         linears.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
