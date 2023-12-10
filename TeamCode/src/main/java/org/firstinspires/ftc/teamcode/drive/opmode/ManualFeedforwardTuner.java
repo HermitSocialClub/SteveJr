@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_ACCEL;
+//import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.MAX_ACCEL;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -22,6 +23,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
 import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 
 import java.util.Objects;
@@ -44,11 +46,11 @@ import java.util.Objects;
 @Config
 @Autonomous(group = "drive")
 public class ManualFeedforwardTuner extends LinearOpMode {
-    public static double DISTANCE = 72; // in
+    public static double DISTANCE = 60; // in
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    private SampleMecanumDrive drive;
+    private ElliotDrive drive;
 
     enum Mode {
         DRIVER_MODE,
@@ -72,7 +74,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
-        drive = new SampleMecanumDrive(hardwareMap);
+        drive = new ElliotDrive(hardwareMap);
 
         final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -118,7 +120,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     final double NOMINAL_VOLTAGE = 12.0;
                     final double voltage = voltageSensor.getVoltage();
                     drive.setDrivePower(new Pose2d(NOMINAL_VOLTAGE / voltage * targetPower, 0, 0));
-                    drive.updatePoseEstimate();
+                    drive.update();
 
                     Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
                     double currentVelo = poseVelo.getX();

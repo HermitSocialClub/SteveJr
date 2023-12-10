@@ -11,7 +11,9 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.drive.templates.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
+//import org.firstinspires.ftc.teamcode.drive.templates.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants;
 import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 
 /*
@@ -34,7 +36,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        ElliotDrive drive = new ElliotDrive(hardwareMap);
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 
@@ -68,7 +70,7 @@ public class TrackWidthTuner extends LinearOpMode {
                 drive.update();
             }
 
-            double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
+            double trackWidth = ElliotDriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
             trackWidthStats.add(trackWidth);
 
             sleep(DELAY);

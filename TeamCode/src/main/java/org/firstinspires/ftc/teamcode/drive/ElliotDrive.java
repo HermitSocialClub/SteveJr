@@ -57,10 +57,10 @@ import java.util.List;
  */
 @Config
 public class ElliotDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0,0,0);//8,0,1);//(2.5, 0, 1.5);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0,0,0);//8,0,1);//(5 , 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0,0,0);//8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8,0,1);//8,0,1);//(5 , 0, 1);
 
-    public static double LATERAL_MULTIPLIER = 1; //2.67;//1.55;
+    public static double LATERAL_MULTIPLIER = 1.41676714; //2.67;//1.55;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -135,8 +135,8 @@ public class ElliotDrive extends MecanumDrive {
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftRear");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftFront");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         linears = hardwareMap.get(DcMotorEx.class, "linears");
         intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
         intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
