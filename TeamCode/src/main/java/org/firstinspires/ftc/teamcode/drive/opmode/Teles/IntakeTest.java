@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Disabled
 @TeleOp (name = "IntakeTest")
 public class IntakeTest extends LinearOpMode {
     public DcMotor intakeRight;

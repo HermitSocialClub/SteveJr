@@ -32,13 +32,13 @@ public class BigElliotLocalizer extends ThreeTrackingWheelLocalizer {
     public static double WHEEL_RADIUS = .688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 16.38;//14.25; //8.75; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 16.32;//14.25; //8.75; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = -4; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
-    public static double X_MULTIPLIER = 1.03953767; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.00276849; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = 1; // 1.03953767; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1; // 1.00276849; // Multiplier in the Y direction
 
     public BigElliotLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -53,8 +53,9 @@ public class BigElliotLocalizer extends ThreeTrackingWheelLocalizer {
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
         leftEncoder.setDirection(Encoder.Direction.REVERSE);
-        frontEncoder.setDirection(Encoder.Direction.REVERSE);
+        frontEncoder.setDirection(Encoder.Direction.FORWARD);
         rightEncoder.setDirection(Encoder.Direction.FORWARD);
+
 
 
 

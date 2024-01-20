@@ -62,18 +62,18 @@ public class DROPONLYREDAutonPathing extends LinearOpMode {
         drive.setPoseEstimate(starting);
 
         TrajectorySequence toMiddleSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
-                .back(30.5)
+                .back(35)
                 .forward(27)
                 .turn(m(90))
                 //.back(35)
                 .build();
 
         TrajectorySequence toRightSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
-                .back(19)
+                .back(26.5)
                 .waitSeconds(0.5)
                 .turn(m(-47))
                 .waitSeconds(0.5)
-                .back(10)
+                .back(13.5)
                 .forward(7.5)
 //                .waitSeconds(0.5)
 //                .turn(m(47))
@@ -84,10 +84,10 @@ public class DROPONLYREDAutonPathing extends LinearOpMode {
                 .build();
 
         TrajectorySequence toLeftSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
-                .back(20.5)
+                .back(26)
                 .turn(m(47))
                 .waitSeconds(0.5)
-                .back(7)
+                .back(11.5)
                 .forward(4.5)
 //                .waitSeconds(0.5)
 //                .turn(m(-47))

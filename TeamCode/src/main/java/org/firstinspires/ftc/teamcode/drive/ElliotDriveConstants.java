@@ -48,7 +48,7 @@ public class ElliotDriveConstants {
      */
     public static double WHEEL_RADIUS = 1.9685; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 14.33;//16.25; // in
+    public static double TRACK_WIDTH = 14.8;//16.25; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -56,7 +56,7 @@ public class ElliotDriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.01865;//1.0 / rpmToVelocity(MAX_RPM);
+    public static double kV = 0.01795;//1.0 / rpmToVelocity(MAX_RPM);
     public static double kA = 0.0035;
     public static double kStatic = 0.02;
 
@@ -90,8 +90,8 @@ public class ElliotDriveConstants {
      */
     public static double MAX_VEL = 54;
     public static double MAX_ACCEL = 54;
-    public static double MAX_ANG_VEL = Math.toRadians(180); //229.06136033510973
-    public static double MAX_ANG_ACCEL = Math.toRadians(150); //192.75552
+    public static double MAX_ANG_VEL = 3.9911256184892276; //229.06136033510973
+    public static double MAX_ANG_ACCEL = 2.6179938779914944; //192.75552
 
 
     public static double encoderTicksToInches(double ticks) {

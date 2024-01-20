@@ -5,7 +5,7 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.S
 import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.SiddyPosition.RIGHT;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -17,8 +17,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "REDAutonPathing")
-public class BlueAutonPathing extends LinearOpMode {
+@Autonomous (name = "RedClosetoWallMeet3Auton")
+public class RedCloseToWallMeet3Auton extends LinearOpMode {
 
     public ElliotDrive drive;
     SiddyDetector vision;
@@ -58,83 +58,66 @@ public class BlueAutonPathing extends LinearOpMode {
             }
         });
 
-        Pose2d starting = new Pose2d(15, -60, Math.toRadians(-90));
+        Pose2d starting = new Pose2d(15, -63, Math.toRadians(-90));
         drive.setPoseEstimate(starting);
 
         TrajectorySequence toMiddleSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
-                .back(30.5)
-                .forward(27)
+                .addDisplacementMarker(0,()->{
+                    drive.klance.setPosition(0.5);
+                })
+                .lineTo(new Vector2d(15,-32))
+                .lineTo(new Vector2d(15,-40))
                 .turn(m(-90))
-                .back(27)
                 .build();
 
         TrajectorySequence toMiddleBackBoard = drive.trajectorySequenceBuilder(toMiddleSequence.end())
+                .lineTo(new Vector2d(47,-50))
+//                .addDisplacementMarker(50,()->{
+//                    drive.klance.setPosition(0);
+//                })
+
+                .build();
+
+
+        TrajectorySequence toLeftSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
+                .addDisplacementMarker(0,()->{
+                    drive.klance.setPosition(0.5);
+                })
+                .strafeTo(new Vector2d(2,-30.5))
+                .lineTo(new Vector2d(2,-45))
+                .turn(m(-90))
+                .build();
+
+        TrajectorySequence toLeftBackboard = drive.trajectorySequenceBuilder(toLeftSequence.end())
+                .lineTo(new Vector2d(20,-45))
+                .lineTo(new Vector2d(20, -50))
+//                .addDisplacementMarker(50,()->{
+//                    drive.klance.setPosition(0);
+//                })
+
                 .build();
 
         TrajectorySequence toRightSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
-                .back(19)
-                .waitSeconds(0.5)
-                .turn(m(47))
-                .waitSeconds(0.5)
-                .back(10)
-                .forward(7.5)
-                .waitSeconds(0.5)
-                .turn(m(-47))
-                .waitSeconds(0.5)
-                .forward(15)
-                .turn(m(90))
-                .back(35)
+                .addDisplacementMarker(0,()->{
+                    drive.klance.setPosition(0.5);
+        })
+                .strafeTo(new Vector2d(25,-39))
+                .lineTo(new Vector2d(25,-49))
+                .turn(m(-90))
                 .build();
 
-        TrajectorySequence toLeftSequence = drive.trajectorySequenceBuilder(new Pose2d(starting.vec(),m(-90)))
-                .back(20.5)
-                .turn(m(-47))
-                .waitSeconds(0.5)
-                .back(7)
-                .forward(4.5)
-                .waitSeconds(0.5)
-                .turn(m(47))
-                .waitSeconds(0.5)
-                .forward(17)
-                .turn(m(90))
-                .back(35)
+        TrajectorySequence toRightBackboard = drive.trajectorySequenceBuilder(toLeftSequence.end())
+                .lineTo(new Vector2d(61,-49))
+                .lineTo(new Vector2d(61.5, -71))
+//                .addDisplacementMarker(50,()->{
+//                    drive.klance.setPosition(0);
+//                })
+
                 .build();
 
 
 
-        Trajectory toMiddleSpike = drive.trajectoryBuilder(new Pose2d(starting.vec(),m(-90)),m(90))
-                .back(30.5)
-//                .forward(5)
-                //.splineTo(new Vector2d(35,-35.5),m(-90))
-               // .splineTo(new Vector2d(35,-41),m(90))
-                .build();
-
-        Trajectory backToStartMiddle = drive.trajectoryBuilder(toMiddleSpike.end())
-                .splineToSplineHeading(new Pose2d(35,-60,m(0)),m(90))
-                .build();
-
-        Trajectory toLeftSpike = drive.trajectoryBuilder(new Pose2d(starting.vec(),m(-90)))
-                .splineToSplineHeading(new Pose2d(17,-37,m(-130)),m(90))
-                //.lineToSplineHeading(new Pose2d(40,-45,m(130)))
-                .build();
-
-        Trajectory toLeftButICry = drive.trajectoryBuilder(new Pose2d(starting.vec(),Math.toRadians(-90)),Math.toRadians(90))
-               // .splineTo(new Vector2d(40,-45),m(130))
-                .splineToSplineHeading(new Pose2d(35,-30.5,m(-50)),m(90))
-                .build();
-
-        Trajectory backToStartLeft = drive.trajectoryBuilder(toLeftSpike.end())
-                .splineToSplineHeading(new Pose2d(35,-60,m(0)),m(90))
-                .build();
-
-        Trajectory toRightSpike = drive.trajectoryBuilder(new Pose2d(starting.vec(),m(-90)),m(90))
-                .splineToSplineHeading(new Pose2d(30,-40,m(50)),m(90))
-                .build();
-
-        Trajectory backToStartRight = drive.trajectoryBuilder(toRightSpike.end())
-                .splineToSplineHeading(new Pose2d(35,-60,m(0)),m(90))
-                .build();
-
+                //50,47/50,50
         while (!isStarted() && !isStopRequested())
         {
             telemetry.addData("siddy position: ", vision.location);
@@ -147,25 +130,27 @@ public class BlueAutonPathing extends LinearOpMode {
         waitForStart();
             if(isStopRequested()) return;
 
+            drive.klance.setPosition(0.5);
             //drive.ramp.setPosition(0.025);
 
            if (vision.location == LEFT){
 
+
                drive.followTrajectorySequence(toLeftSequence);
-              // drive.followTrajectory(toLeftSpike);
+               drive.followTrajectorySequence(toLeftBackboard);
+
               // drive.followTrajectory(toLeftButICry);
 
            } else if (vision.location == CENTER){
 
                drive.followTrajectorySequence(toMiddleSequence);
+               drive.followTrajectorySequence(toMiddleBackBoard);
+            //   drive.klance.setPosition(0);
 
            } else if (vision.location == RIGHT){
-
                drive.followTrajectorySequence(toRightSequence);
+               drive.followTrajectorySequence(toRightBackboard);
 
-           } else {
-
-               drive.followTrajectorySequence(toLeftSequence);
 
            }
 

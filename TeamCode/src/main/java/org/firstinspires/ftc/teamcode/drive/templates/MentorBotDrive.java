@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.drive.templates;
 
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.DIRECTIONS;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.MAX_ACCEL;
@@ -8,7 +8,6 @@ import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.encoderTicksToInches;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kV;
@@ -42,7 +41,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.drive.templates.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.BigElliotLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -56,9 +55,9 @@ import java.util.List;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class ElliotDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0,0,0);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3,0,1);//8,0,1);//(5 , 0, 1);
+public class MentorBotDrive extends MecanumDrive {
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0,0,0);//8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8,0,1);//8,0,1);//(5 , 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1.41676714; //2.67;//1.55;
 
@@ -77,15 +76,12 @@ public class ElliotDrive extends MecanumDrive {
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     public DcMotorEx linears;
    // public DcMotorEx intakeLeft;
-  //  public DcMotorEx intakeRight;
+   // public DcMotorEx intakeRight;
     public Servo ramp;
-    public Servo clawLeft;
-    public Servo clawRight;
     public DcMotorEx susPension;
    // public Servo trap;
-    public Servo poleGrabber;
+   // public Servo poleGrabber;
     public CRServo plane;
-    public Servo klance;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -93,7 +89,7 @@ public class ElliotDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
-    public ElliotDrive(HardwareMap hardwareMap) {
+    public MentorBotDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -141,16 +137,13 @@ public class ElliotDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         linears = hardwareMap.get(DcMotorEx.class, "linears");
-        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
-        clawRight = hardwareMap.get(Servo.class,"clawRight");
-      //  intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
+       // intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
       //  intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
         ramp = hardwareMap.get(Servo.class,"ramp");
         susPension = hardwareMap.get(DcMotorEx.class, "susPension");
-    //    trap = hardwareMap.get(Servo.class, "trap");
-        poleGrabber = hardwareMap.get(Servo.class, "poleGrabber");
+       // trap = hardwareMap.get(Servo.class, "trap");
+        //poleGrabber = hardwareMap.get(Servo.class, "poleGrabber");
         plane = hardwareMap.get(CRServo.class, "plane");
-        klance = hardwareMap.get(Servo.class,"klance");
 
         linears.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
