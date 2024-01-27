@@ -5,10 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
+import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 
 @TeleOp (name = "MotorTest")
 public class MotorTest extends LinearOpMode {
-    ElliotDrive drive;
+    NamjoonDrive drive;
     DcMotor right_drive;
     DcMotor right_drive_2;
     DcMotor left_drive;
@@ -16,7 +17,7 @@ public class MotorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        drive = new ElliotDrive(hardwareMap);
+        drive = new NamjoonDrive(hardwareMap);
 //        left_drive = hardwareMap.get(DcMotor.class, "leftFront") ;
 //        left_drive_2 = hardwareMap.get(DcMotor.class, "leftRear") ;
 //        right_drive = hardwareMap.get(DcMotor.class, "rightFront") ;
