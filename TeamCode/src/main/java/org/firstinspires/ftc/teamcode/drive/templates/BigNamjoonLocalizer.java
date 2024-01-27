@@ -32,8 +32,8 @@ public class BigNamjoonLocalizer extends ThreeTrackingWheelLocalizer {
     public static double WHEEL_RADIUS = .688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 16.32;//14.25; //8.75; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = -4; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 10.5;//14.25; //8.75; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -4.5; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 

@@ -23,7 +23,7 @@ public class NamjoonDriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 537.6;
+    public static final double TICKS_PER_REV = 537.7;
     public static final double MAX_RPM = 312;
 
     /*
@@ -46,9 +46,9 @@ public class NamjoonDriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 1.9685; // in
+    public static double WHEEL_RADIUS = 2.96875; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 14.8;//16.25; // in
+    public static double TRACK_WIDTH = 16; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -56,9 +56,9 @@ public class NamjoonDriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.01795;//1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0.0035;
-    public static double kStatic = 0.02;
+    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
+    public static double kA = 0;
+    public static double kStatic = 0;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -71,27 +71,27 @@ public class NamjoonDriveConstants {
      * Note from LearnRoadRunner.com:
      * The velocity and acceleration constraints were calculated based on the following equation:
      * ((MAX_RPM / 60) * GEAR_RATIO * WHEEL_RADIUS * 2 * Math.PI) * 0.85
-     * Resulting in 54.66855022514893 in/s.
+     * Resulting in 82.44717220264712 in/s.
      * This is only 85% of the theoretical maximum velocity of the bot, following the recommendation above.
      * This is capped at 85% because there are a number of variables that will prevent your bot from actually
      * reaching this maximum velocity: voltage dropping over the game, bot weight, general mechanical inefficiencies, etc.
      * However, you can push this higher yourself if you'd like. Perhaps raise it to 90-95% of the theoretically
-     * max velocity. The theoretically maximum velocity is 64.31594144135168 in/s.
+     * max velocity. The theoretically maximum velocity is 96.99667317958486 in/s.
      * Just make sure that your bot can actually reach this maximum velocity. Path following will be detrimentally
      * affected if it is aiming for a velocity not actually possible.
      *
      * The maximum acceleration is somewhat arbitrary and it is recommended that you tweak this yourself based on
      * actual testing. Just set it at a reasonable value and keep increasing until your path following starts
-     * to degrade. As of now, it simply mirrors the velocity, resulting in 54.66855022514893 in/s/s
+     * to degrade. As of now, it simply mirrors the velocity, resulting in 82.44717220264712 in/s/s
      *
      * Maximum Angular Velocity is calculated as: maximum velocity / trackWidth * (180 / Math.PI) but capped at 360°/s.
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 54;
-    public static double MAX_ACCEL = 54;
-    public static double MAX_ANG_VEL = 3.9911256184892276; //229.06136033510973
-    public static double MAX_ANG_ACCEL = 2.6179938779914944; //192.75552
+    public static double MAX_VEL = 82.44717220264712;
+    public static double MAX_ACCEL = 82.44717220264712;
+    public static double MAX_ANG_VEL = Math.toRadians(295.24218749999994);
+    public static double MAX_ANG_ACCEL = Math.toRadians(295.24218749999994);
 
 
     public static double encoderTicksToInches(double ticks) {
