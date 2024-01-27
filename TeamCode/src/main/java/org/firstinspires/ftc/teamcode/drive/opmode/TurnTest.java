@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
+import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
+
 import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 
 /*
@@ -17,7 +19,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ElliotDrive drive = new ElliotDrive(hardwareMap);
+        NamjoonDrive drive = new NamjoonDrive(hardwareMap);
 
         waitForStart();
 

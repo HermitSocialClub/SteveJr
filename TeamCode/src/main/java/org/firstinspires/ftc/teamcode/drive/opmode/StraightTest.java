@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
+import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 
 /*
@@ -24,7 +25,7 @@ public class StraightTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        ElliotDrive drive = new ElliotDrive(hardwareMap);
+        NamjoonDrive drive = new NamjoonDrive(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)

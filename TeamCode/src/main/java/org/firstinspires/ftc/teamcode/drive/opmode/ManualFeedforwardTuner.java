@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 
 //import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.kV;
-import static org.firstinspires.ftc.teamcode.drive.ElliotDriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.MAX_ACCEL;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
+import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 import org.firstinspires.ftc.teamcode.drive.templates.SampleMecanumDrive;
 
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    private ElliotDrive drive;
+    private NamjoonDrive drive;
 
     enum Mode {
         DRIVER_MODE,
@@ -74,7 +75,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
-        drive = new ElliotDrive(hardwareMap);
+        drive = new NamjoonDrive(hardwareMap);
 
         final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
