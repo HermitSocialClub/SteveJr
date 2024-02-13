@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Autons;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Disabled
 @Autonomous (name = "MeetZB2")
 public class MeetZB2 extends LinearOpMode {
 

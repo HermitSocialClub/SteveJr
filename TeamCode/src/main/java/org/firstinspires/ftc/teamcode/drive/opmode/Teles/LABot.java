@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.ElliotDrive;
 
-
+@Disabled
 @TeleOp(name = "LABot", group = "Elliot")
 
 public class LABot extends LinearOpMode {

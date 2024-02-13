@@ -57,8 +57,8 @@ import java.util.List;
  */
 @Config
 public class NamjoonDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0,0,0);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0,0,0);//8,0,1);//(5 , 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.5,0,0);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(9.5,0,0);//8,0,1);//(5 , 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1.41676714; //2.67;//1.55;
 
@@ -75,17 +75,11 @@ public class NamjoonDrive extends MecanumDrive {
     int targetDist = 0;
 
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    //public DcMotorEx linears;
-   // public DcMotorEx intakeLeft;
-  //  public DcMotorEx intakeRight;
-//    public Servo ramp;
-//    public Servo clawLeft;
-//    public Servo clawRight;
-//    public DcMotorEx susPension;
-//   // public Servo trap;
-//    public Servo poleGrabber;
-//    public CRServo plane;
-//    public Servo klance;
+    public DcMotorEx spool;
+    public DcMotorEx chains;
+    public Servo claw;
+    public CRServo plane;
+
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -140,19 +134,16 @@ public class NamjoonDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-//        linears = hardwareMap.get(DcMotorEx.class, "linears");
-//        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
-//        clawRight = hardwareMap.get(Servo.class,"clawRight");
-//      //  intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
-//      //  intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
-//        ramp = hardwareMap.get(Servo.class,"ramp");
-//        susPension = hardwareMap.get(DcMotorEx.class, "susPension");
-//    //    trap = hardwareMap.get(Servo.class, "trap");
-//        poleGrabber = hardwareMap.get(Servo.class, "poleGrabber");
-//        plane = hardwareMap.get(CRServo.class, "plane");
-//        klance = hardwareMap.get(Servo.class,"klance");
+        spool = hardwareMap.get(DcMotorEx.class, "spool");
+        chains = hardwareMap.get(DcMotorEx.class, "chains");
+        claw = hardwareMap.get(Servo.class, "claw");
+
+
+        plane = hardwareMap.get(CRServo.class, "plane");
+
 
         //linears.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        chains.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));

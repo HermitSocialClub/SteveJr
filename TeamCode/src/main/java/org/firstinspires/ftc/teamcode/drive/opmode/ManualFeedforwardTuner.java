@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 //import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.templates.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants.kStatic;
