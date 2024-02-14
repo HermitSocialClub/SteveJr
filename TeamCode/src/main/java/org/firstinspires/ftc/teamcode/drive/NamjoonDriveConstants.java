@@ -89,7 +89,7 @@ public class NamjoonDriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 30;
+    public static double MAX_VEL = 82.44717220264712;
     public static double MAX_ACCEL = 82.44717220264712;
     public static double MAX_ANG_VEL = Math.toRadians(310.1650190537944);
     public static double MAX_ANG_ACCEL = Math.toRadians(310.1650190537944);

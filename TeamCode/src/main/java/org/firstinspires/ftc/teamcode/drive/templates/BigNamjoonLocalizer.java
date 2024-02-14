@@ -37,8 +37,8 @@ public class BigNamjoonLocalizer extends ThreeTrackingWheelLocalizer {
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
-    public static double X_MULTIPLIER = 0.991371332; // 1.03953767; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.02059039; // 1.00276849; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = 1.012473; // 1.03953767; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1; // 1.00276849; // Multiplier in the Y direction
 
     public BigNamjoonLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(

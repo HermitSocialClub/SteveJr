@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.drive.templates.BigNamjoonLocalizer;
-import org.firstinspires.ftc.teamcode.drive.templates.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -315,7 +315,7 @@ public class NamjoonDrive extends MecanumDrive {
         for (DcMotorEx motor : motors) {
             int position = motor.getCurrentPosition();
             lastEncPositions.add(position);
-            wheelPositions.add(DriveConstants.encoderTicksToInches(position));
+            wheelPositions.add(NamjoonDriveConstants.encoderTicksToInches(position));
         }
         return wheelPositions;
     }
@@ -328,7 +328,7 @@ public class NamjoonDrive extends MecanumDrive {
         for (DcMotorEx motor : motors) {
             int vel = (int) motor.getVelocity();
             lastEncVels.add(vel);
-            wheelVelocities.add(DriveConstants.encoderTicksToInches(vel));
+            wheelVelocities.add(NamjoonDriveConstants.encoderTicksToInches(vel));
         }
         return wheelVelocities;
     }
