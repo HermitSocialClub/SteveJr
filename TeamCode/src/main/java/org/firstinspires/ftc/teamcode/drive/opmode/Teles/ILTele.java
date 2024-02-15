@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 
 
@@ -33,6 +34,27 @@ public class ILTele extends LinearOpMode {
 
         while (opModeIsActive()) {
             opmodeRunTime.reset();
+            int lF = drive.leftFront.getCurrentPosition();
+            int lR = drive.leftRear.getCurrentPosition();
+            int rR = drive.rightRear.getCurrentPosition();
+            int rF = drive.rightFront.getCurrentPosition();
+
+            double vLF = drive.leftFront.getVelocity(AngleUnit.DEGREES);
+            double vLR = drive.leftRear.getVelocity(AngleUnit.DEGREES);
+            double vRF = drive.rightFront.getVelocity(AngleUnit.DEGREES);
+            double vRR = drive.rightRear.getVelocity(AngleUnit.DEGREES);
+
+            telemetry.addData("leftFront ticks: ", lF);
+            telemetry.addData("leftRear ticks: ", lR);
+            telemetry.addData("rightFront ticks: ", rF);
+            telemetry.addData("rightRear ticks: ", rR);
+            telemetry.addData("leftFront velocity in degrees per sec: ", vLF);
+            telemetry.addData("leftRear velocity in degrees per sec: ", vLR);
+            telemetry.addData("rightFront velocity in degrees per sec: ", vRF);
+            telemetry.addData("rightRear velocity in degrees per sec: ", vRR);
+
+            telemetry.update();
+
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),

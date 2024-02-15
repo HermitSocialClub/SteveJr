@@ -20,7 +20,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector;
 import org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.SiddyPosition;
 
-@Autonomous (name = "BLUEAutonPathing")
+@Autonomous (name = "OLDBLUEAutonPathing")
 public class AutonPathing extends LinearOpMode {
 
     public ElliotDrive drive;
