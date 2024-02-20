@@ -105,7 +105,7 @@ public class ILTSimple extends LinearOpMode {
                drive.followTrajectory(dropYellowMid);
                sleep(500);
                drive.clawFlipper.setPosition(0.5);
-               drive.claw.setPosition(0);
+               drive.clawLeft.setPosition(0);
 
            } else if (vision.location == RIGHT){
 

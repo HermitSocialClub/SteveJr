@@ -57,8 +57,8 @@ import java.util.List;
  */
 @Config
 public class NamjoonDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.5,0,0);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(9.5,0,0);//8,0,1);//(5 , 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8,0,1);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.2,0,1);//8,0,1);//(5 , 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1.41676714; //2.67;//1.55;
 
@@ -77,7 +77,8 @@ public class NamjoonDrive extends MecanumDrive {
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     public DcMotorEx spool;
     public DcMotorEx chains;
-    public Servo claw;
+    public Servo clawLeft;
+    public Servo clawRight;
     public Servo clawFlipper;
     public CRServo plane;
 
@@ -137,7 +138,8 @@ public class NamjoonDrive extends MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         spool = hardwareMap.get(DcMotorEx.class, "spool");
         chains = hardwareMap.get(DcMotorEx.class, "chains");
-        claw = hardwareMap.get(Servo.class, "claw");
+        clawLeft = hardwareMap.get(Servo.class, "clawLeft");
+        clawRight = hardwareMap.get(Servo.class, "clawRight");
         clawFlipper = hardwareMap.get(Servo.class,"clawFlipper");
 
         plane = hardwareMap.get(CRServo.class, "plane");
