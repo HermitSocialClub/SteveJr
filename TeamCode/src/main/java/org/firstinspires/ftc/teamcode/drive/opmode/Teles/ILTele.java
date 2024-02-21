@@ -72,7 +72,7 @@ public class ILTele extends LinearOpMode {
 
             controller.setTargetPosition(target);
             int armPos = drive.chains.getCurrentPosition();
-            double correction = controller.update(armPos,target);
+            double correction = controller.update(armPos);
 
             drive.chains.setPower(correction);
 

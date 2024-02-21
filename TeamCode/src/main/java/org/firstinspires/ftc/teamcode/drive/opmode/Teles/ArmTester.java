@@ -14,53 +14,44 @@ import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 @TeleOp(name = "ArmTester", group = "Elliot")
 public class ArmTester extends LinearOpMode {
     NamjoonDrive drive;
+    public static int target = 0;
+    public static double servoTarget = 0;
+
     private FtcDashboard dashboard = FtcDashboard.getInstance();
-
-    public static double kP = 0.01;
-    public static double kI = 0;
-    public static double kD = 0.0001;
-    public static double feedforward = 0.05;
-    public static int target = -100;
-
-    public static double ticks_per_deg = 752/180;
-
-    PIDCoefficients coeffs = new PIDCoefficients(kP, kI, kD);
-
-    PIDFController controller = new PIDFController(coeffs);
 
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new NamjoonDrive(hardwareMap);
-        drive.chains.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        drive.chains.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         waitForStart();
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-//            controller.setTargetPosition(target);
-//            int armPos = drive.chains.getCurrentPosition();
-//            double correction = controller.update(armPos,feedforward);
-//
-//            drive.chains.setPower(correction);
-            //int target = drive.chains.getCurrentPosition();
-            controller.setTargetPosition(target);
-            int armPos = drive.chains.getCurrentPosition();
-            double correction = controller.update(armPos,feedforward);
 
-            drive.chains.setPower(correction);
+            drive.updateArmPID();
+//            drive.clawRight.setPosition(servoTarget);
 
-//            if (Math.abs(gamepad2.right_stick_y) < 0.1 ){
-//                drive.chains.setPower(2*(correction));
-//            } else {
-//                drive.chains.setPower(gamepad2.right_stick_y*0.6);
-//            }
+            if (gamepad2.a)
+            {
+                drive.closeRightClaw();
+            }
+            if (gamepad2.b)
+            {
+                drive.closeLeftClaw();
+            }
+            if (gamepad2.x)
+            {
+                drive.openLeftClaw();
+            }
+            if (gamepad2.y)
+            {
+                drive.openRightClaw();
+            }
 
-            telemetry.addData("ticks:", armPos);
+            telemetry.addData("claw right position: ", servoTarget);
+            telemetry.addData("ticks:", drive.chains.getCurrentPosition());
             telemetry.addData("leftFront ticks:", drive.leftFront.getCurrentPosition());
             telemetry.addData("target position:",target);
-            telemetry.addData("correction:",correction);
             telemetry.addData("controller value", gamepad2.right_stick_y);
             telemetry.update();
 

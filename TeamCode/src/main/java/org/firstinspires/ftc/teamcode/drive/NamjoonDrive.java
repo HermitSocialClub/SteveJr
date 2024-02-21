@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
@@ -60,6 +61,9 @@ public class NamjoonDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8,0,1);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.2,0,1);//8,0,1);//(5 , 0, 1);
 
+    public static PIDCoefficients ARM_PID = new PIDCoefficients(0.01, 0, 0.0001);
+
+    public static PIDFController ARM_CONTROLLER = new PIDFController(ARM_PID);
     public static double LATERAL_MULTIPLIER = 1.41676714; //2.67;//1.55;
 
     public static double VX_WEIGHT = 1;
@@ -79,6 +83,7 @@ public class NamjoonDrive extends MecanumDrive {
     public DcMotorEx chains;
     public Servo clawLeft;
     public Servo clawRight;
+
     public Servo clawFlipper;
     public CRServo plane;
 
@@ -171,6 +176,11 @@ public class NamjoonDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
+        //set chains to PID only and set them to dead
+        chains.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        chains.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ARM_CONTROLLER.setTargetPosition(0);
+
         // TODO: reverse any motors using DcMotor.setDirection()
         setMotorDirections(DIRECTIONS);
 
@@ -192,6 +202,47 @@ public class NamjoonDrive extends MecanumDrive {
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return new TrajectoryBuilder(startPose, reversed, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
+
+    public void openLeftClaw()
+    {
+        openLeftClaw(1);
+    }
+
+    public void openLeftClaw(double position)
+    {
+        clawLeft.setPosition(position);
+    }
+
+    public void openRightClaw()
+    {
+        openRightClaw(0.2);
+    }
+
+    public void openRightClaw(double position)
+    {
+        clawRight.setPosition(position);
+    }
+
+    public void closeLeftClaw()
+    {
+        closeLeftClaw(0.5);
+    }
+
+    public void closeLeftClaw(double position)
+    {
+        clawLeft.setPosition(position);
+    }
+
+    public void closeRightClaw()
+    {
+        closeRightClaw(0.7);
+    }
+
+    public void closeRightClaw(double position)
+    {
+        clawRight.setPosition(position);
+    }
+
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
         return new TrajectoryBuilder(startPose, startHeading, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
@@ -245,7 +296,18 @@ public class NamjoonDrive extends MecanumDrive {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
+    public void updateArmPID()
+    {
+        int armPos = chains.getCurrentPosition();
+        double correction = ARM_CONTROLLER.update(armPos);
+        chains.setPower(correction);
+    }
+
     public void update() {
+
+        //arm PID loop
+        updateArmPID();
+
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);

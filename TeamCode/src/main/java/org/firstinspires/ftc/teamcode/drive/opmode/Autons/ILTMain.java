@@ -31,6 +31,7 @@ public class ILTMain extends LinearOpMode {
     public static double kI = 0;
     public static double kD = 0.0001;
     public static double feedforward = 0.05;
+    public int actionIndex = 0;
  //   public static int target = -150;
 
     public static double ticks_per_deg = 752/180;
@@ -48,12 +49,12 @@ public class ILTMain extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         NamjoonDrive drive = new NamjoonDrive(hardwareMap);
-        drive.chains.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        drive.chains.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        vision = new SiddyDetector(hardwareMap,telemetry,1);
+        //initialize chains
 
         // Vision
+        vision = new SiddyDetector(hardwareMap,telemetry,1);
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
@@ -77,6 +78,9 @@ public class ILTMain extends LinearOpMode {
             }
         });
 
+
+        //pathing
+
         Pose2d startLine = new Pose2d(-40, -62, Math.toRadians(90));
         drive.setPoseEstimate(startLine);
 
@@ -91,9 +95,9 @@ public class ILTMain extends LinearOpMode {
 //                    drive.leftFront.setPower(0);
 //                    drive.rightFront.setPower(0);
 //                    drive.rightRear.setPower(0);
-                   // drive.clawFlipper.setPosition(0.9);
-                    drive.clawLeft.setPosition(0);
-                    drive.clawRight.setPosition(0);
+                    drive.clawFlipper.setPosition(0.5);
+                    drive.clawLeft.setPosition(0.15);
+                    drive.clawRight.setPosition(0.15);
                     //drive.clawFlipper.setPosition(0.4);
                 })
                 .splineToConstantHeading(
@@ -117,15 +121,20 @@ public class ILTMain extends LinearOpMode {
                         NamjoonDrive.getVelocityConstraint(15, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
-                .addDisplacementMarker(10,()->{
-                   //drive.clawFlipper.setPosition();
-                    drive.clawLeft.setPosition(0.7);
-                    drive.clawRight.setPosition(0.7);
+                .addDisplacementMarker(15,()->{
+                    drive.clawFlipper.setPosition(0.5);
+                    drive.clawLeft.setPosition(0.15);
+                    drive.clawRight.setPosition(0.8);
                 })
                 .build();
 
         Trajectory dropYellowWhiteMid = drive.trajectoryBuilder(pickUpWhiteMid.end(),m(0))
-                .splineToSplineHeading(new Pose2d(-50,-10,m(180)),m(0))
+                .splineToSplineHeading(
+                        new Pose2d(-56,0,m(0)),m(180),
+                        NamjoonDrive.getVelocityConstraint(15, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
+                        NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
+
+                )
 //                .splineTo(new Vector2d(0,-10),m(0))
 //                .splineTo(new Vector2d(50, -35),m(0))
                 .build();
@@ -142,18 +151,18 @@ public class ILTMain extends LinearOpMode {
 
         waitForStart();
         if(isStopRequested()) return;
-        while (opModeIsActive()) {
-            // flippy(-300);
-            controller.setTargetPosition(-150);
-            int armPos = drive.chains.getCurrentPosition();
-            double correction = controller.update(armPos, feedforward);
+//        while (opModeIsActive()) {
+//            // flippy(-300);
+//            controller.setTargetPosition(-100);
+//            int armPos = drive.chains.getCurrentPosition();
+//            double correction = controller.update(armPos, feedforward);
+//
+//            drive.chains.setPower(correction);
+//        }
 
-            drive.chains.setPower(correction);
-        }
-
-            drive.clawFlipper.setPosition(0.87);
-            drive.clawLeft.setPosition(0.7);
-            drive.clawRight.setPosition(0.7);
+           // drive.clawFlipper.setPosition(0.7);
+            drive.clawLeft.setPosition(0.15);
+            drive.clawRight.setPosition(0.8);
            // drive.spool.setPower(-0.05);
 
            if (vision.location == LEFT){
@@ -161,20 +170,48 @@ public class ILTMain extends LinearOpMode {
 
 
            } else if (vision.location == CENTER){
+                //fsm
+               //TODO: make a finite state machine class and clean this up
+               while(opModeIsActive() && !isStopRequested())
+                {
+                    telemetry.addData("drive busy: ", drive.isBusy());
+                    telemetry.addData("action: ", actionIndex);
+                    switch (actionIndex) {
+                        case 0:
+                            if (drive.isBusy()) break;
+                            actionIndex++;
+                            controller.setTargetPosition(-200);
+                            drive.followTrajectoryAsync(dropPurpleMid);
+                            break;
 
-               drive.followTrajectory(dropPurpleMid);
+                        case 1:
+                            if (drive.isBusy()) break;
+                            actionIndex++;
+                            drive.followTrajectoryAsync(pickUpWhiteMid);
+                            break;
+
+                        case 2:
+                            if (drive.isBusy()) break;
+                            actionIndex++;
+                            drive.followTrajectoryAsync(dropYellowWhiteMid);
+                            break;
+
+                        default:
+                            break;
+                    }
+                    int armPos = drive.chains.getCurrentPosition();
+                    double correction = controller.update(armPos);
+
+                    drive.chains.setPower(correction);
+                    drive.update();
+                }
               // drive.clawFlipper.setPosition(0.87);
 //               sleep(1000);
-               while (opModeIsActive()) {
                    // flippy(-300);
-                   controller.setTargetPosition(-400);
-                   int armPos = drive.chains.getCurrentPosition();
-                   double correction = controller.update(armPos, feedforward);
+                   drive.followTrajectory(dropPurpleMid);
+//                   drive.followTrajectory(pickUpWhiteMid);
+//                   drive.followTrajectory(dropYellowWhiteMid);
 
-                   drive.chains.setPower(correction);
-               }
-               drive.followTrajectory(pickUpWhiteMid);
-               drive.followTrajectory(dropYellowWhiteMid);
 //               sleep(1000);
 //               drive.followTrajectory(dropYellowWhiteMid);
 //               drive.clawFlipper.setPosition(0.5);
