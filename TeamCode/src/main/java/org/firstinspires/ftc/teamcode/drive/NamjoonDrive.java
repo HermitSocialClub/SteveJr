@@ -205,7 +205,7 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void openLeftClaw()
     {
-        openLeftClaw(1);
+        openLeftClaw(.5);
     }
 
     public void openLeftClaw(double position)
@@ -215,7 +215,7 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void openRightClaw()
     {
-        openRightClaw(0.2);
+        openRightClaw(0.4);
     }
 
     public void openRightClaw(double position)
@@ -225,7 +225,7 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void closeLeftClaw()
     {
-        closeLeftClaw(0.5);
+        closeLeftClaw(0);
     }
 
     public void closeLeftClaw(double position)
@@ -235,7 +235,7 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void closeRightClaw()
     {
-        closeRightClaw(0.7);
+        closeRightClaw(.9);
     }
 
     public void closeRightClaw(double position)

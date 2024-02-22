@@ -15,9 +15,18 @@ import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 public class ArmTester extends LinearOpMode {
     NamjoonDrive drive;
     public static int target = 0;
+
+    public static int armTarget = -200;
     public static double servoTarget = 0;
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private double servoTargetLeft = 0;
+    private double servoTargetRight = 0;
+
+    public static PIDCoefficients LINEAR_PID = new PIDCoefficients(0, 0, 0);
+
+    public static PIDFController LINEAR_CONTROLLER = new PIDFController(LINEAR_PID);
+    private static int linearTarget = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,30 +38,49 @@ public class ArmTester extends LinearOpMode {
         while (opModeIsActive()) {
 
             drive.updateArmPID();
-//            drive.clawRight.setPosition(servoTarget);
+
+            drive.spool.setPower(-(((Math.abs(gamepad2.left_stick_y) < .2) ? 0 : gamepad2.left_stick_y) / .70) * 0.5);
+
+            drive.clawLeft.setPosition(servoTargetLeft);
+            drive.clawRight.setPosition(servoTargetRight);
 
             if (gamepad2.a)
             {
-                drive.closeRightClaw();
+//                drive.closeRightClaw();
+                servoTargetLeft += .01;
             }
             if (gamepad2.b)
             {
-                drive.closeLeftClaw();
+//                drive.closeLeftClaw();
+                servoTargetRight += .01;
             }
             if (gamepad2.x)
             {
-                drive.openLeftClaw();
+                servoTargetLeft -= .01;
             }
             if (gamepad2.y)
             {
-                drive.openRightClaw();
+//                drive.openRightClaw();
+                servoTargetRight -= 0.01;
             }
+            drive.ARM_CONTROLLER.setTargetPosition(armTarget);
+            LINEAR_CONTROLLER.setTargetPosition(linearTarget);
 
-            telemetry.addData("claw right position: ", servoTarget);
+            int spoolPos = drive.spool.getCurrentPosition();
+
+            double correction = LINEAR_CONTROLLER.update(spoolPos);
+            drive.spool.setPower(correction);
+
+
+
+            telemetry.addData("claw right position: ", servoTargetRight);
+            telemetry.addData("claw left position: ", servoTargetLeft);
             telemetry.addData("ticks:", drive.chains.getCurrentPosition());
             telemetry.addData("leftFront ticks:", drive.leftFront.getCurrentPosition());
             telemetry.addData("target position:",target);
             telemetry.addData("controller value", gamepad2.right_stick_y);
+            telemetry.addData("spoolPos: ", spoolPos);
+            telemetry.addData("target spool pos: ", linearTarget);
             telemetry.update();
 
 
