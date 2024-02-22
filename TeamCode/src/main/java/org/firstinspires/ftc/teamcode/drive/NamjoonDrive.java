@@ -148,10 +148,10 @@ public class NamjoonDrive extends MecanumDrive {
         clawFlipper = hardwareMap.get(Servo.class,"clawFlipper");
 
         plane = hardwareMap.get(CRServo.class, "plane");
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //linears.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

@@ -134,12 +134,12 @@ public class ILTele extends LinearOpMode {
 
                 if (gamepad1.y){
                     drive.rightFront.setPower(0.5);
-                    drive.rightRear.setPower(-0.5);
+                    drive.rightRear.setPower(-0.9);
                     drive.leftFront.setPower(-0.5);
                     drive.leftRear.setPower(0.5);
                 } else if (gamepad1.x) {
                     drive.rightFront.setPower(-0.5);
-                    drive.rightRear.setPower(0.5);
+                    drive.rightRear.setPower(0.6);
                     drive.leftFront.setPower(0.5);
                     drive.leftRear.setPower(-0.5);
                 } else {
@@ -151,7 +151,7 @@ public class ILTele extends LinearOpMode {
                             ));
                 }
 
-                drive.spool.setPower(-(((Math.abs(gamepad2.left_stick_y) < .2) ? 0.1 : gamepad2.left_stick_y) / .70) * 0.5);
+                drive.spool.setPower((Math.abs(gamepad2.left_stick_y) < .2) ? -0.1 : (-gamepad2.left_stick_y / .70)  * 0.5);
 
                 // Read pose
                 Pose2d poseEstimate = drive.getPoseEstimate();
