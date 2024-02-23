@@ -18,7 +18,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous (name = "DROPONLYBLUEAutonPathing")
-public class DROPONLYAutonPathing extends LinearOpMode {
+public class    DROPONLYAutonPathing extends LinearOpMode {
 
     public ElliotDrive drive;
     SiddyDetector vision;
