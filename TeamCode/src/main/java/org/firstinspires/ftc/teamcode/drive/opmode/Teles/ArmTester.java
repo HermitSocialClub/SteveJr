@@ -26,11 +26,13 @@ public class ArmTester extends LinearOpMode {
     public static PIDCoefficients LINEAR_PID = new PIDCoefficients(0, 0, 0);
 
     public static PIDFController LINEAR_CONTROLLER = new PIDFController(LINEAR_PID);
-    private static int linearTarget = 0;
+    public static int linearTarget = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new NamjoonDrive(hardwareMap);
+
+        drive.spool.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
         if (isStopRequested()) return;
@@ -41,8 +43,15 @@ public class ArmTester extends LinearOpMode {
 
             drive.spool.setPower(-(((Math.abs(gamepad2.left_stick_y) < .2) ? 0 : gamepad2.left_stick_y) / .70) * 0.5);
 
-            drive.clawLeft.setPosition(servoTargetLeft);
+            drive.clawFlipper.setPosition(servoTargetLeft);
             drive.clawRight.setPosition(servoTargetRight);
+
+            if (gamepad1.y) {
+                drive.flipperUp();
+            }
+            if (gamepad1.b){
+                drive.flipperDown();
+            }
 
             if (gamepad2.a)
             {
@@ -66,7 +75,7 @@ public class ArmTester extends LinearOpMode {
             drive.ARM_CONTROLLER.setTargetPosition(armTarget);
             LINEAR_CONTROLLER.setTargetPosition(linearTarget);
 
-            int spoolPos = drive.spool.getCurrentPosition();
+            int spoolPos = drive.spoolEncoder.getCurrentPosition();
 
             double correction = LINEAR_CONTROLLER.update(spoolPos);
             drive.spool.setPower(correction);

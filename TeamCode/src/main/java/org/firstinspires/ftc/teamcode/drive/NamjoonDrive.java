@@ -47,6 +47,7 @@ import org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -58,18 +59,17 @@ import java.util.List;
  */
 @Config
 public class NamjoonDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8,0,1);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.2,0,1);//8,0,1);//(5 , 0, 1);
-
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.5,0,1);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.6,0,1);//8,0,1);//(5 , 0, 1);
     public static PIDCoefficients ARM_PID = new PIDCoefficients(0.01, 0, 0.0001);
-
+    public static PIDCoefficients LINEAR_PID = new PIDCoefficients(0.01, 0, 0.0001);
     public static PIDFController ARM_CONTROLLER = new PIDFController(ARM_PID);
+    public static PIDFController LINEAR_CONTROLLER = new PIDFController(LINEAR_PID);
     public static double LATERAL_MULTIPLIER = 1.41676714; //2.67;//1.55;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
-
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
@@ -80,12 +80,15 @@ public class NamjoonDrive extends MecanumDrive {
 
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     public DcMotorEx spool;
+    public Encoder spoolEncoder;
     public DcMotorEx chains;
     public Servo clawLeft;
     public Servo clawRight;
 
     public Servo clawFlipper;
-    public CRServo plane;
+    public Servo plane;
+
+    public DcMotorEx winch;
 
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
@@ -146,8 +149,10 @@ public class NamjoonDrive extends MecanumDrive {
         clawLeft = hardwareMap.get(Servo.class, "clawLeft");
         clawRight = hardwareMap.get(Servo.class, "clawRight");
         clawFlipper = hardwareMap.get(Servo.class,"clawFlipper");
+        spoolEncoder = new Encoder(hardwareMap.get(DcMotorEx.class,"leftFront"));
+        winch = hardwareMap.get(DcMotorEx.class, "winch");
 
-        plane = hardwareMap.get(CRServo.class, "plane");
+        plane = hardwareMap.get(Servo.class, "plane");
 //        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -166,8 +171,12 @@ public class NamjoonDrive extends MecanumDrive {
             motor.setMotorType(motorConfigurationType);
         }
 
+        //NOTE: WE CANNOT USE RUN_USING_ENCODER WE DO NOT HAVE ENOUGH ENCODERS
         if (RUN_USING_ENCODER) {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        else {
+            setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -179,6 +188,11 @@ public class NamjoonDrive extends MecanumDrive {
         //set chains to PID only and set them to dead
         chains.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chains.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        spool.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);         //this port has the spool encoder
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        LINEAR_CONTROLLER.setTargetPosition(0);
         ARM_CONTROLLER.setTargetPosition(0);
 
         // TODO: reverse any motors using DcMotor.setDirection()
@@ -236,6 +250,28 @@ public class NamjoonDrive extends MecanumDrive {
     public void closeRightClaw()
     {
         closeRightClaw(.9);
+    }
+
+    public void flipperUp()
+    {
+        clawFlipper.setPosition(0);
+    }
+
+    public void flipperDown() {
+        clawFlipper.setPosition(0.5);
+    }
+
+    public void setFlipperPosition(double pos)
+    {
+        if (pos > 1)
+        {
+            pos = 1;
+        }
+        if (pos < 0)
+        {
+            pos = 0;
+        }
+        clawFlipper.setPosition(pos * 0.5);
     }
 
     public void closeRightClaw(double position)
@@ -302,12 +338,23 @@ public class NamjoonDrive extends MecanumDrive {
         double correction = ARM_CONTROLLER.update(armPos);
         chains.setPower(correction);
     }
+    public void updateLinearPID()
+    {
+        int linearPos = spoolEncoder.getCurrentPosition();
+        double correction = LINEAR_CONTROLLER.update(linearPos);
+        spool.setPower(correction);
+    }
 
+    public void updateAllPIDs()
+    {
+        updateLinearPID();
+        updateArmPID();
+    }
     public void update() {
 
         //arm PID loop
-        updateArmPID();
-
+//        updateArmPID();
+//        updateLinearPID();
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);

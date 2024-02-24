@@ -38,7 +38,7 @@ public class BigNamjoonLocalizer extends ThreeTrackingWheelLocalizer {
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     public static double X_MULTIPLIER = 1; // 1.03953767; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.02554811; // 1.00276849; // Multiplier in the Y direction
+    public static double Y_MULTIPLIER = 1; // 1.00276849; // Multiplier in the Y direction
 
     public BigNamjoonLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -47,7 +47,7 @@ public class BigNamjoonLocalizer extends ThreeTrackingWheelLocalizer {
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "winch"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "spool"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
 

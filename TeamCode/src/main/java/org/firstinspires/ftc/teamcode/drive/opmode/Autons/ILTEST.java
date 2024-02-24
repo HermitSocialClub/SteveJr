@@ -20,6 +20,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import java.util.Vector;
+
 @Autonomous (name = "ILTEST")
 public class ILTEST extends LinearOpMode {
 
@@ -79,7 +81,6 @@ public class ILTEST extends LinearOpMode {
 
 
         //pathing
-
         Pose2d startLine = new Pose2d(15, 62, Math.toRadians(-90));
         drive.setPoseEstimate(startLine);
 
@@ -96,20 +97,20 @@ public class ILTEST extends LinearOpMode {
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
 
-                .splineToSplineHeading(
-                        new Pose2d(53,35,m(-90)),m(0),
+                .splineToConstantHeading(
+                        new Vector2d(53,35),m(0),
                         NamjoonDrive.getVelocityConstraint(25, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
 
-                .splineToSplineHeading(
-                        new Pose2d(53,39,m(-90)),m(90),
+                .splineToConstantHeading(
+                        new Vector2d(53,39),m(90),
                         NamjoonDrive.getVelocityConstraint(25, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
 
-                .splineToSplineHeading(
-                        new Pose2d(53,52,m(-90)),m(-90),
+                .splineToConstantHeading(
+                        new Vector2d(53,52),m(-90),
                         NamjoonDrive.getVelocityConstraint(25, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
@@ -140,6 +141,7 @@ public class ILTEST extends LinearOpMode {
            // drive.clawFlipper.setPosition(0.7);
             drive.clawLeft.setPosition(0.15);
             drive.clawRight.setPosition(0.8);
+            drive.followTrajectory(dropPurpleMid);
            // drive.spool.setPower(-0.05);
 
 //           if (vision.location == LEFT){

@@ -28,15 +28,22 @@ public class ILTele extends LinearOpMode {
     private boolean lastXMash = false;
     public boolean reverseDirections = false;
     public double reverseMod = 1;
-    int target = 0;
-    private boolean safe_mode = false;
+    int armTarget = 0;
+    int linearTarget = 0;
+    private double flipperPosition = 0;
+    private boolean safe_mode = true;
+    private double servoTargetLeft = 0;
+    private boolean safe_mode_drive = true;
+    private boolean winchTime = false;
+    public boolean debugMode = false;
 
-
+    private int clawOnFloorTicks = -30;
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new NamjoonDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0, 0, 0));
         ElapsedTime opmodeRunTime = new ElapsedTime();
+        flipperPosition = drive.clawFlipper.getPosition() / 0.5;
         //drive.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         waitForStart();
@@ -46,6 +53,13 @@ public class ILTele extends LinearOpMode {
             opmodeRunTime.reset();
 
             drive.updateArmPID();
+            if (winchTime)
+            {
+                drive.spool.setPower(0);
+            }
+            else {
+                drive.updateLinearPID();
+            }
 
             if (gamepad2.x)
             {
@@ -53,21 +67,30 @@ public class ILTele extends LinearOpMode {
             }
 
             if (gamepad2.right_stick_y >= 0.1){
-                target += 6;
+                armTarget += 10;
             } else if (gamepad2.right_stick_y <= -0.1){
-                target -= 6;
+                armTarget -= 10;
             }
-            if (gamepad2.y)
+            if (gamepad2.left_stick_y >= 0.1){
+                linearTarget -= 20;
+            } else if (gamepad2.left_stick_y <= -0.1){
+                linearTarget += 20;
+            }
+//            if (gamepad2.y)
+//            {
+//                armTarget = -30;
+//            }
+
+            if (safe_mode)
             {
-                target = -30;
+                if (armTarget >= -30) {armTarget = -30;}
+                if (armTarget <= -1150) {armTarget = -1150;}
+                if (linearTarget <= 0) {linearTarget = 0;}
+                if (linearTarget >= 950) {linearTarget = 950;}
             }
 
-            if (safe_mode && target <= -30)
-            {
-                target = -30;
-            }
-
-            drive.ARM_CONTROLLER.setTargetPosition(target);
+            drive.ARM_CONTROLLER.setTargetPosition(armTarget);
+            drive.LINEAR_CONTROLLER.setTargetPosition(linearTarget);
 
 
 
@@ -82,39 +105,75 @@ public class ILTele extends LinearOpMode {
             double vRF = drive.rightFront.getVelocity(AngleUnit.DEGREES);
             double vRR = drive.rightRear.getVelocity(AngleUnit.DEGREES);
 
-            telemetry.addData("leftFront ticks: ", lF);
-            telemetry.addData("arm ticks: ", drive.chains.getCurrentPosition());
-            telemetry.addData("arm target ticks: ", target);
-            telemetry.addData("leftRear ticks: ", lR);
-            telemetry.addData("rightFront ticks: ", rF);
-            telemetry.addData("rightRear ticks: ", rR);
-            telemetry.addData("leftFront velocity in degrees per sec: ", vLF);
-            telemetry.addData("leftRear velocity in degrees per sec: ", vLR);
-            telemetry.addData("rightFront velocity in degrees per sec: ", vRF);
-            telemetry.addData("rightRear velocity in degrees per sec: ", vRR);
-            telemetry.addData("leftFrontVolt",drive.leftFront.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("leftRearVolt",drive.leftRear.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("rightFrontVolt",drive.rightFront.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("rightRearVolt",drive.rightRear.getCurrent(CurrentUnit.AMPS));
+            if (debugMode) {
+                telemetry.addData("leftFront ticks: ", lF);
+                telemetry.addData("arm ticks: ", drive.chains.getCurrentPosition());
+                telemetry.addData("arm target ticks: ", armTarget);
+                telemetry.addData("linear ticks: ", drive.spoolEncoder.getCurrentPosition());
+                telemetry.addData("linear target ticks: ", linearTarget);
+                telemetry.addData("leftRear ticks: ", lR);
+                telemetry.addData("rightFront ticks: ", rF);
+                telemetry.addData("rightRear ticks: ", rR);
+                telemetry.addData("leftFront velocity in degrees per sec: ", vLF);
+                telemetry.addData("leftRear velocity in degrees per sec: ", vLR);
+                telemetry.addData("rightFront velocity in degrees per sec: ", vRF);
+                telemetry.addData("rightRear velocity in degrees per sec: ", vRR);
+                telemetry.addData("leftFrontVolt",drive.leftFront.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("leftRearVolt",drive.leftRear.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("rightFrontVolt",drive.rightFront.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("rightRearVolt",drive.rightRear.getCurrent(CurrentUnit.AMPS));
+            }
 
+
+
+            if (gamepad2.a)
+            {
+                clawOnFloorTicks = drive.chains.getCurrentPosition();
+//                debugMode = !debugMode;
+            }
+
+
+            telemetry.addData("Claw on Floor? ", drive.chains.getCurrentPosition() < clawOnFloorTicks);
             telemetry.update();
 
 
 
 
-                if (gamepad1.right_bumper) {
-                    drive.plane.setPower(-1);
-                } else {
-                    drive.plane.setPower(0);
-                }
+
+            if (gamepad2.right_trigger > 0.5)
+            {
+//                drive.closeRightClaw();
+                flipperPosition += 0.05;
+//                drive.setFlipperPosition(drive.clawFlipper.getPosition() + .01);
+            }
+            if (gamepad2.left_trigger > 0.5)
+            {
+                flipperPosition -= 0.05;
+//                drive.closeLeftClaw();
+//                drive.setFlipperPosition(drive.clawFlipper.getPosition() - .01);
+            }
+            if (flipperPosition <= 0)
+            {
+                flipperPosition = 0;
+            }
+            if (flipperPosition >= 1)
+            {
+                flipperPosition = 1;
+            }
+            if (gamepad2.y) {
+                drive.flipperUp();
+            }
+            if (gamepad2.b){
+                drive.flipperDown();
+            }
+            drive.setFlipperPosition(flipperPosition);
 
 //                if (gamepad2.left_trigger > 0.5){
-//                    drive.clawFlipper.setPosition(0.3);
+//                    drive.flipperUp();
 //                } else if (gamepad2.right_trigger > 0.5) {
-//                    drive.clawLeft.setPosition(0.15);
-//                    drive.clawRight.setPosition(0.8);
+//                    drive.clawFlipper.setPosition(0.25);
 //                } else {
-//                    drive.clawFlipper.setPosition(0.87);
+//                    drive.flipperDown();
 //                }
 
                 if (gamepad2.left_bumper){
@@ -132,26 +191,47 @@ public class ILTele extends LinearOpMode {
                     drive.closeRightClaw();
                 }
 
-                if (gamepad1.y){
-                    drive.rightFront.setPower(0.5);
-                    drive.rightRear.setPower(-0.9);
-                    drive.leftFront.setPower(-0.5);
-                    drive.leftRear.setPower(0.5);
-                } else if (gamepad1.x) {
-                    drive.rightFront.setPower(-0.5);
-                    drive.rightRear.setPower(0.6);
-                    drive.leftFront.setPower(0.5);
-                    drive.leftRear.setPower(-0.5);
+                if (gamepad1.right_bumper){
+                    drive.plane.setPosition(1);
                 } else {
+                    drive.plane.setPosition(0);
+                }
+
+                if (gamepad1.a){
+                    winchTime = true;
+                } else {
+                    winchTime = false;
+                }
+
+                if (gamepad1.left_trigger > 0.5 && winchTime == true) {
+                    drive.winch.setPower(-1);
+                } else if (gamepad1.left_bumper && winchTime == true){
+                    drive.winch.setPower(1);
+                }
+                else {
+                    drive.winch.setPower(0);
+                }
+
+                if (gamepad1.y){
+                    safe_mode_drive = !safe_mode_drive;
+                }
+//                    drive.rightFront.setPower(0.5);
+//                    drive.rightRear.setPower(-0.9);
+//                    drive.leftFront.setPower(-0.5);
+//                    drive.leftRear.setPower(0.5);
+//                } else if (gamepad1.x) {
+//                    drive.rightFront.setPower(-0.5);
+//                    drive.rightRear.setPower(0.6);
+//                    drive.leftFront.setPower(0.5);
+//                    drive.leftRear.setPower(-0.5);
+//                } else {
                     drive.setWeightedDrivePower(
                             new Pose2d(
                                     -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.5),
-                                    -(((Math.abs(gamepad1.left_stick_x) < .2) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.5),
+                                    -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.5),
                                     -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * 0.7 * (gamepad1.right_trigger > 0.05 ? 1 : 0.5)
                             ));
-                }
-
-                drive.spool.setPower((Math.abs(gamepad2.left_stick_y) < .2) ? -0.1 : (-gamepad2.left_stick_y / .70)  * 0.5);
+//                }
 
                 // Read pose
                 Pose2d poseEstimate = drive.getPoseEstimate();

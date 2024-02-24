@@ -161,8 +161,8 @@ public class ILTMain extends LinearOpMode {
 //        }
 
            // drive.clawFlipper.setPosition(0.7);
-            drive.clawLeft.setPosition(0.15);
-            drive.clawRight.setPosition(0.8);
+           // drive.clawLeft.setPosition(0.15);
+            //drive.clawRight.setPosition(0.8);
            // drive.spool.setPower(-0.05);
 
            if (vision.location == LEFT){
@@ -173,41 +173,41 @@ public class ILTMain extends LinearOpMode {
                 //fsm
                //TODO: make a finite state machine class and clean this up
                while(opModeIsActive() && !isStopRequested())
-                {
-                    telemetry.addData("drive busy: ", drive.isBusy());
-                    telemetry.addData("action: ", actionIndex);
-                    switch (actionIndex) {
-                        case 0:
-                            if (drive.isBusy()) break;
-                            actionIndex++;
-                            controller.setTargetPosition(-200);
-                            drive.followTrajectoryAsync(dropPurpleMid);
-                            break;
+               {
+                   telemetry.addData("drive busy: ", drive.isBusy());
+                   telemetry.addData("action: ", actionIndex);
+                   switch (actionIndex) {
+                       case 0:
+                           if (drive.isBusy()) break;
+                           actionIndex++;
+                           controller.setTargetPosition(-200);
+                           drive.followTrajectoryAsync(dropPurpleMid);
+                           break;
 
-                        case 1:
-                            if (drive.isBusy()) break;
-                            actionIndex++;
-                            drive.followTrajectoryAsync(pickUpWhiteMid);
-                            break;
+                       case 1:
+                           if (drive.isBusy()) break;
+                           actionIndex++;
+                           drive.followTrajectoryAsync(pickUpWhiteMid);
+                           break;
 
-                        case 2:
-                            if (drive.isBusy()) break;
-                            actionIndex++;
-                            drive.followTrajectoryAsync(dropYellowWhiteMid);
-                            break;
+                       case 2:
+                           if (drive.isBusy()) break;
+                           actionIndex++;
+                           drive.followTrajectoryAsync(dropYellowWhiteMid);
+                           break;
 
-                        default:
-                            break;
-                    }
-                    int armPos = drive.chains.getCurrentPosition();
-                    double correction = controller.update(armPos);
+                       default:
+                           break;
+                   }
+                   int armPos = drive.chains.getCurrentPosition();
+                   double correction = controller.update(armPos);
 
-                    drive.chains.setPower(correction);
-                    drive.update();
-                }
-              // drive.clawFlipper.setPosition(0.87);
+                   drive.chains.setPower(correction);
+                   drive.update();
+               }
+               // drive.clawFlipper.setPosition(0.87);
 //               sleep(1000);
-                   // flippy(-300);
+               // flippy(-300);
                    drive.followTrajectory(dropPurpleMid);
 //                   drive.followTrajectory(pickUpWhiteMid);
 //                   drive.followTrajectory(dropYellowWhiteMid);
