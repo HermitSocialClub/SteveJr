@@ -18,8 +18,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "ILTRedFar")
-public class RedILTFarSideDROPonly extends LinearOpMode {
+@Autonomous (name = "ILTBlueFar")
+public class BlueILTFFarSideDROPOnly extends LinearOpMode {
     public NamjoonDrive drive;
     SiddyDetector vision;
     private OpenCvWebcam webcam;
@@ -68,24 +68,23 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
                 .back(12)
                 .build();
 
-        TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
+        TrajectorySequence dropPurpleRight = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(15)
-                .turn(m(90))
-                .forward(12.5)
                 .turn(m(-90))
+                .forward(12.5)
+                .turn(m(90))
                 .forward(25)
                 .back(20)
                 .build();
 
-        TrajectorySequence dropPurpleRight = drive.trajectorySequenceBuilder(startLine)
+        TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(25)
-                .turn(m(-90))
+                .turn(m(90))
                 .forward(15)
-                .back(14)
-//                .ba9-ck(20)
-                .turn(m(30))
+                .back(13)
+                .turn(m(-30))
                 .build();
 
         // running vision
@@ -137,13 +136,14 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
 
             }
         }
-        else if (vision.location == LEFT)
+        else if (vision.location == RIGHT)
         {
             int actionIndex = 1;
-            drive.followTrajectorySequenceAsync(dropPurpleLeft);
+            drive.followTrajectorySequenceAsync(dropPurpleRight);
 
             while (opModeIsActive() && !isStopRequested()) {
-                switch (actionIndex) {
+                switch (actionIndex)
+                {
                     case 1:
                         //even though we start at one we have to wait for
                         //once previous trajectory is complete
@@ -159,8 +159,8 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
                         drive.closeRightClaw();
                         sleep(1000);
                         actionIndex++;
-                        break;
 
+                        break;
                 }
                 drive.updateAllPIDs();
                 drive.update();
@@ -169,10 +169,10 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
 
         }
 
-        else if (vision.location == RIGHT)
+        else if (vision.location == LEFT)
         {
             int actionIndex = 1;
-            drive.followTrajectorySequenceAsync(dropPurpleRight);
+            drive.followTrajectorySequenceAsync(dropPurpleLeft);
 
             while (opModeIsActive() && !isStopRequested()) {
                 switch (actionIndex) {

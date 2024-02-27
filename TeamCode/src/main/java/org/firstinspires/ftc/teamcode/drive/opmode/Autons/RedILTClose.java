@@ -18,8 +18,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "ILTBlueClose")
-public class BlueILTClose extends LinearOpMode {
+@Autonomous (name = "ILTRedClose")
+public class RedILTClose extends LinearOpMode {
     public NamjoonDrive drive;
     SiddyDetector vision;
     private OpenCvWebcam webcam;
@@ -30,7 +30,7 @@ public class BlueILTClose extends LinearOpMode {
         NamjoonDrive drive = new NamjoonDrive(hardwareMap);
 
         //init vision
-        vision = new SiddyDetector(hardwareMap,telemetry,1);
+        vision = new SiddyDetector(hardwareMap,telemetry,0);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -68,47 +68,46 @@ public class BlueILTClose extends LinearOpMode {
                 .back(12)
                 .build();
 
-        TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
+        TrajectorySequence dropPurpleRight = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(15)
-                .turn(m(90))
-                .forward(12.5)
                 .turn(m(-90))
+                .forward(12.5)
+                .turn(m(90))
                 .forward(25)
                 .back(20)
                 .build();
 
-        TrajectorySequence dropPurpleRight = drive.trajectorySequenceBuilder(startLine)
+        TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(25)
-                .turn(m(-90))
+                .turn(m(90))
                 .forward(15)
                 .back(13)
-//                .ba9-ck(20)
-                .turn(m(30))
+                .turn(m(-30))
                 .build();
 
-        TrajectorySequence goToBoardRightIntermediate = drive.trajectorySequenceBuilder(dropPurpleRight.end())
+        TrajectorySequence goToBoardLeftIntermediate = drive.trajectorySequenceBuilder(dropPurpleLeft.end())
                 .setVelConstraint(velocityConstraint)
-                .turn(m(60))
+                .turn(m(-60))
                 .forward(4)
-                .turn(m(-90))
+                .turn(m(90))
                 .build();
 
-        TrajectorySequence goToBoardLeft = drive.trajectorySequenceBuilder(dropPurpleLeft.end())
+        TrajectorySequence goToBoardRight = drive.trajectorySequenceBuilder(dropPurpleRight.end())
                 .setVelConstraint(velocityConstraint)
                 .back(3)
-                .turn(m(-90))
+                .turn(m(90))
                 .back(25)
                 .build();
 
         TrajectorySequence goToBoardCenter = drive.trajectorySequenceBuilder(dropPurpleMid.end())
                 .setVelConstraint(velocityConstraint)
-                .turn(m(-90))
+                .turn(m(90))
                 .back(37)
                 .build();
 
-        TrajectorySequence goToBoardRight = drive.trajectorySequenceBuilder(goToBoardRightIntermediate.end())
+        TrajectorySequence goToBoardLeft = drive.trajectorySequenceBuilder(goToBoardLeftIntermediate.end())
                 .setVelConstraint(velocityConstraint)
                 .back(37)
                 .build();
@@ -210,10 +209,10 @@ public class BlueILTClose extends LinearOpMode {
 
             }
         }
-        else if (vision.location == LEFT)
+        else if (vision.location == RIGHT)
         {
             int actionIndex = 1;
-            drive.followTrajectorySequenceAsync(dropPurpleLeft);
+            drive.followTrajectorySequenceAsync(dropPurpleRight);
 
             while (opModeIsActive() && !isStopRequested()) {
                 switch (actionIndex)
@@ -249,7 +248,7 @@ public class BlueILTClose extends LinearOpMode {
                         if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
 
 
-                        drive.followTrajectorySequenceAsync(goToBoardLeft);
+                        drive.followTrajectorySequenceAsync(goToBoardRight);
                         //the reason we do this is because we only want to call followTrajectorySequence once, so instead of redoing the loop we can move onto the next
                         //one and wait for drive to be unbusy
                         actionIndex++;
@@ -290,10 +289,10 @@ public class BlueILTClose extends LinearOpMode {
 
         }
 
-        else if (vision.location == RIGHT)
+        else if (vision.location == LEFT)
         {
             int actionIndex = 1;
-            drive.followTrajectorySequenceAsync(dropPurpleRight);
+            drive.followTrajectorySequenceAsync(dropPurpleLeft);
 
             while (opModeIsActive() && !isStopRequested()) {
                 switch (actionIndex) {
@@ -316,7 +315,7 @@ public class BlueILTClose extends LinearOpMode {
                         break;
                     case 2:
                         if (drive.isBusy()) break;
-                        drive.followTrajectorySequenceAsync(goToBoardRightIntermediate);
+                        drive.followTrajectorySequenceAsync(goToBoardLeftIntermediate);
                         actionIndex++;
                         break;
                     case 3:
@@ -332,7 +331,7 @@ public class BlueILTClose extends LinearOpMode {
                         if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
 
 
-                        drive.followTrajectorySequenceAsync(goToBoardRight);
+                        drive.followTrajectorySequenceAsync(goToBoardLeft);
                         //the reason we do this is because we only want to call followTrajectorySequence once, so instead of redoing the loop we can move onto the next
                         //one and wait for drive to be unbusy
                         actionIndex++;

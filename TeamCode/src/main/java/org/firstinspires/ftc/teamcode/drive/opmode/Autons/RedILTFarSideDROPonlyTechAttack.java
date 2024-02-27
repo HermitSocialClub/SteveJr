@@ -18,8 +18,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "ILTRedFar")
-public class RedILTFarSideDROPonly extends LinearOpMode {
+@Autonomous (name = "ILTRedFarTechAttack")
+public class RedILTFarSideDROPonlyTechAttack extends LinearOpMode {
     public NamjoonDrive drive;
     SiddyDetector vision;
     private OpenCvWebcam webcam;

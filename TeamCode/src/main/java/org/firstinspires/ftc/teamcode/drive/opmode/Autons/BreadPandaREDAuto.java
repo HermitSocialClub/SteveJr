@@ -18,8 +18,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "ILTRedFar")
-public class RedILTFarSideDROPonly extends LinearOpMode {
+@Autonomous (name = "BreadRED")
+public class BreadPandaREDAuto extends LinearOpMode {
     public NamjoonDrive drive;
     SiddyDetector vision;
     private OpenCvWebcam webcam;
@@ -68,6 +68,10 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
                 .back(12)
                 .build();
 
+        TrajectorySequence dropPurpleBack = drive.trajectorySequenceBuilder(dropPurpleMid.end())
+                .back(25)
+                .build();
+
         TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(15)
@@ -83,7 +87,7 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
                 .forward(25)
                 .turn(m(-90))
                 .forward(15)
-                .back(14)
+                .back(13)
 //                .ba9-ck(20)
                 .turn(m(30))
                 .build();
@@ -131,6 +135,11 @@ public class RedILTFarSideDROPonly extends LinearOpMode {
                             actionIndex++;
                         }
                         break;
+                    case 2:
+                       if (!drive.isBusy()) {
+                           drive.followTrajectorySequenceAsync(dropPurpleBack);
+                       }
+                       break;
                 }
                 drive.updateAllPIDs();
                 drive.update();

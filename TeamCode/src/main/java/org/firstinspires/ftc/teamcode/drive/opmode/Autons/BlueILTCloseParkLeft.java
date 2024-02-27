@@ -18,8 +18,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "ILTBlueClose")
-public class BlueILTClose extends LinearOpMode {
+@Autonomous (name = "ILTBlueCloseParkLeft")
+public class BlueILTCloseParkLeft extends LinearOpMode {
     public NamjoonDrive drive;
     SiddyDetector vision;
     private OpenCvWebcam webcam;
@@ -113,6 +113,33 @@ public class BlueILTClose extends LinearOpMode {
                 .back(37)
                 .build();
 
+        TrajectorySequence boardCenterToParkLeft = drive.trajectorySequenceBuilder(goToBoardCenter.end())
+                .setVelConstraint(velocityConstraint)
+                .forward(10)
+                .turn(m(-90))
+                .back(24)
+                .turn(m(90))
+                .back(15)
+                .build();
+
+        TrajectorySequence boardLeftToParkLeft = drive.trajectorySequenceBuilder(goToBoardLeft.end())
+                .setVelConstraint(velocityConstraint)
+                .forward(10)
+                .turn(m(-90))
+                .back(20)
+                .turn(m(90))
+                .back(15)
+                .build();
+
+        TrajectorySequence boardRightToParkLeft = drive.trajectorySequenceBuilder(goToBoardRight.end())
+                .setVelConstraint(velocityConstraint)
+                .forward(10)
+                .turn(m(-90))
+                .back(28)
+                .turn(m(90))
+                .back(15)
+                .build();
+
         // running vision
         while (!isStarted() && !isStopRequested())
         {
@@ -201,6 +228,9 @@ public class BlueILTClose extends LinearOpMode {
                         // with sleep the PID shits itself
                         drive.ARM_CONTROLLER.setTargetPosition(-300);
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+
+                        drive.followTrajectorySequenceAsync(boardCenterToParkLeft);
+                        actionIndex++;
                         break;
                     default:
                         break;
@@ -281,6 +311,9 @@ public class BlueILTClose extends LinearOpMode {
                         // with sleep the PID shits itself
                         drive.ARM_CONTROLLER.setTargetPosition(-300);
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+
+                        drive.followTrajectorySequenceAsync(boardLeftToParkLeft);
+                        actionIndex++;
                         break;
                 }
                 drive.updateAllPIDs();
@@ -364,6 +397,9 @@ public class BlueILTClose extends LinearOpMode {
                         // with sleep the PID shits itself
                         drive.ARM_CONTROLLER.setTargetPosition(-300);
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+
+                        drive.followTrajectorySequenceAsync(boardRightToParkLeft);
+                        actionIndex++;
                         break;
                     default:
                         break;

@@ -23,11 +23,6 @@ public class ILTele extends LinearOpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     ElapsedTime runtime = new ElapsedTime();
-    private boolean lastAMash = false;
-    private boolean lastBMash = false;
-    private boolean lastXMash = false;
-    public boolean reverseDirections = false;
-    public double reverseMod = 1;
     int armTarget = 0;
     int linearTarget = 0;
     private double flipperPosition = 0;
@@ -35,7 +30,7 @@ public class ILTele extends LinearOpMode {
     private double servoTargetLeft = 0;
     private boolean safe_mode_drive = true;
     private boolean winchTime = false;
-    public boolean debugMode = false;
+    public boolean debugMode = true;
 
     private int clawOnFloorTicks = -30;
     @Override
@@ -53,17 +48,16 @@ public class ILTele extends LinearOpMode {
             opmodeRunTime.reset();
 
             drive.updateArmPID();
-            if (winchTime)
-            {
-                drive.spool.setPower(0);
-            }
-            else {
-                drive.updateLinearPID();
-            }
+            drive.updateLinearPID();
 
             if (gamepad2.x)
             {
                 safe_mode = !safe_mode;
+            }
+
+            if (gamepad1.x)
+            {
+                winchTime = !winchTime;
             }
 
             if (gamepad2.right_stick_y >= 0.1){
@@ -76,17 +70,18 @@ public class ILTele extends LinearOpMode {
             } else if (gamepad2.left_stick_y <= -0.1){
                 linearTarget += 20;
             }
-//            if (gamepad2.y)
-//            {
-//                armTarget = -30;
-//            }
 
             if (safe_mode)
             {
                 if (armTarget >= -30) {armTarget = -30;}
                 if (armTarget <= -1150) {armTarget = -1150;}
                 if (linearTarget <= 0) {linearTarget = 0;}
-                if (linearTarget >= 950) {linearTarget = 950;}
+//                if (linearTarget >= 950) {linearTarget = 950;}
+            }
+
+            if (winchTime)
+            {
+                linearTarget = 0;
             }
 
             drive.ARM_CONTROLLER.setTargetPosition(armTarget);
@@ -134,11 +129,8 @@ public class ILTele extends LinearOpMode {
 
 
             telemetry.addData("Claw on Floor? ", drive.chains.getCurrentPosition() < clawOnFloorTicks);
+            telemetry.addData("Winch Activated? ", winchTime);
             telemetry.update();
-
-
-
-
 
             if (gamepad2.right_trigger > 0.5)
             {
@@ -197,12 +189,6 @@ public class ILTele extends LinearOpMode {
                     drive.plane.setPosition(0);
                 }
 
-                if (gamepad1.a){
-                    winchTime = true;
-                } else {
-                    winchTime = false;
-                }
-
                 if (gamepad1.left_trigger > 0.5 && winchTime == true) {
                     drive.winch.setPower(-1);
                 } else if (gamepad1.left_bumper && winchTime == true){
@@ -227,9 +213,9 @@ public class ILTele extends LinearOpMode {
 //                } else {
                     drive.setWeightedDrivePower(
                             new Pose2d(
-                                    -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.5),
-                                    -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.5),
-                                    -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * 0.7 * (gamepad1.right_trigger > 0.05 ? 1 : 0.5)
+                                    -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
+                                    -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
+                                    -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * 0.7 * (gamepad1.right_trigger > 0.05 ? 1 : 0.7)
                             ));
 //                }
 
