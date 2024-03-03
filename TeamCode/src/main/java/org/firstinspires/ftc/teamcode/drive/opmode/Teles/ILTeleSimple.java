@@ -1,28 +1,18 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Teles;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import static org.firstinspires.ftc.teamcode.drive.NamjoonDrive.MAX_ANG_ACC_CHANGABLE;
-import static org.firstinspires.ftc.teamcode.drive.NamjoonDrive.MAX_ANG_VEL_CHANGABLE;
-import static org.firstinspires.ftc.teamcode.drive.NamjoonDrive.MAX_ACC_CHANGABLE;
-import static org.firstinspires.ftc.teamcode.drive.NamjoonDrive.MAX_VEL_CHANGABLE;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
 
-import kotlin.Unit;
 
-
-@TeleOp (name = "ILTele", group = "Elliot")
-public class ILTele extends LinearOpMode {
+@TeleOp (name = "ILTeleSimple", group = "Elliot")
+public class ILTeleSimple extends LinearOpMode {
     NamjoonDrive drive;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -35,7 +25,16 @@ public class ILTele extends LinearOpMode {
     private boolean safe_mode_drive = true;
     private boolean winchTime = false;
     public boolean debugMode = true;
-    public boolean iAmSpeed = false;
+
+    double x = 0;
+    double x2 = 0;
+    double y = 0;
+    double rx = 0;
+    double y2 = 0;
+    double driveRightPower = 0;
+    double driveRight2Power = 0;
+    double driveLeftPower = 0;
+    double driveLeft2Power = 0;
 
     private int clawOnFloorTicks = -30;
     @Override
@@ -53,7 +52,7 @@ public class ILTele extends LinearOpMode {
             opmodeRunTime.reset();
 
             drive.updateArmPID();
-            drive.updateLinearPID();
+           // drive.updateLinearPID();
 
             if (gamepad2.x)
             {
@@ -70,27 +69,22 @@ public class ILTele extends LinearOpMode {
             } else if (gamepad2.right_stick_y <= -0.1){
                 armTarget -= 20;
             }
-            if (gamepad2.left_stick_y >= 0.1){
-                linearTarget -= 20;
-            } else if (gamepad2.left_stick_y <= -0.1){
-                linearTarget += 20;
-            }
+
+           // drive.spool.setPower(-gamepad2.left_stick_y);
 
             if (safe_mode)
             {
                 if (armTarget >= -30) {armTarget = -30;}
                 if (armTarget <= -1150) {armTarget = -1150;}
-                if (linearTarget <= 0) {linearTarget = 0;}
-                if (linearTarget >= 990) {linearTarget = 990;}
             }
 
             if (winchTime)
             {
-                linearTarget = 0;
+           //     linearTarget = 0;
             }
 
             drive.ARM_CONTROLLER.setTargetPosition(armTarget);
-            drive.LINEAR_CONTROLLER.setTargetPosition(linearTarget);
+          //  drive.LINEAR_CONTROLLER.setTargetPosition(linearTarget);
 
 
 
@@ -106,11 +100,6 @@ public class ILTele extends LinearOpMode {
             double vRR = drive.rightRear.getVelocity(AngleUnit.DEGREES);
 
             if (debugMode) {
-                telemetry.addData("Speed Mode = ", iAmSpeed);
-                telemetry.addData("MAX VEL: ", MAX_VEL_CHANGABLE);
-                telemetry.addData("MAX VEL: ", MAX_ANG_VEL_CHANGABLE);
-                telemetry.addData("MAX VEL: ", MAX_ACC_CHANGABLE);
-                telemetry.addData("MAX VEL: ", MAX_ANG_ACC_CHANGABLE);
                 telemetry.addData("leftFront ticks: ", lF);
                 telemetry.addData("arm ticks: ", drive.chains.getCurrentPosition());
                 telemetry.addData("arm target ticks: ", armTarget);
@@ -129,17 +118,7 @@ public class ILTele extends LinearOpMode {
                 telemetry.addData("rightRearVolt",drive.rightRear.getCurrent(CurrentUnit.AMPS));
             }
 
-            if (gamepad1.a){
-               iAmSpeed = true;
-            } else if (gamepad1.b) {
-                iAmSpeed = false;
-            }
 
-            if (iAmSpeed ==true) {
-                drive.fastMode();
-            } else {
-                drive.slowMode();
-            }
 
             if (gamepad2.a)
             {
@@ -148,33 +127,59 @@ public class ILTele extends LinearOpMode {
             }
             
             if (gamepad1.dpad_left){
-                drive.leftFront.setPower(-0.725);
-                drive.leftRear.setPower(0.65);
-                drive.rightFront.setPower(0.69);
-                drive.rightRear.setPower(-0.72);
+//                drive.leftFront.setPower(-0.725);
+//                drive.leftRear.setPower(0.65);
+//                drive.rightFront.setPower(0.69);
+//                drive.rightRear.setPower(-0.72);
+                drive.leftFront.setPower(-0.69);
+                drive.leftRear.setPower(0.7);
+                drive.rightFront.setPower(0.7);
+                drive.rightRear.setPower(-0.7125);
             } else if (gamepad1.dpad_right){
-                drive.leftFront.setPower(0.65);
-                drive.leftRear.setPower(-0.6);
-                drive.rightFront.setPower(-0.62);
-                drive.rightRear.setPower(0.67);
+//                drive.leftFront.setPower(0.65);
+//                drive.leftRear.setPower(-0.6);
+//                drive.rightFront.setPower(-0.62);
+//                drive.rightRear.setPower(0.67);
+                drive.leftFront.setPower(0.7025);
+                drive.leftRear.setPower(-0.7);
+                drive.rightFront.setPower(-0.7);
+                drive.rightRear.setPower(0.7125);
             } else if (gamepad1.dpad_up){
                 drive.leftFront.setPower(0.525);
                 drive.leftRear.setPower(0.5);
                 drive.rightFront.setPower(0.52);
                 drive.rightRear.setPower(0.5);
             } else if (gamepad1.dpad_down){
-                drive.leftFront.setPower(-0.525);
+//                drive.leftFront.setPower(-0.525);
+//                drive.leftRear.setPower(-0.5);
+//                drive.rightFront.setPower(-0.52);
+//                drive.rightRear.setPower(-0.5);
+                drive.leftFront.setPower(-0.5);
                 drive.leftRear.setPower(-0.5);
-                drive.rightFront.setPower(-0.52);
+                drive.rightFront.setPower(-0.5);
                 drive.rightRear.setPower(-0.5);
             }
             else {
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6),
-                                -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6),
-                                -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6)
-                        ));
+
+                x = gamepad1.left_stick_x ;
+                x2 = gamepad1.left_stick_x ;
+                y = -gamepad1.left_stick_y;
+                y2 = -gamepad1.left_stick_y ;
+                rx = gamepad1.right_stick_x;
+
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                double denominator2 = Math.max(Math.abs(y) + Math.abs(x2) + Math.abs(rx), 1);
+
+                driveRightPower = (((y2 - x2 - rx) / denominator2) );
+                driveRight2Power = (((y + x - rx) / denominator) );
+                driveLeftPower = ((y2 + x + rx) / denominator);
+                driveLeft2Power = (((y - x2 + rx) / denominator2) );
+
+            drive.rightRear.setPower(driveRight2Power);
+            drive.rightFront.setPower(driveRightPower);
+            drive.leftRear.setPower(driveLeft2Power);
+            drive.leftFront.setPower(driveLeftPower);
+//
             }
 
 
@@ -218,14 +223,14 @@ public class ILTele extends LinearOpMode {
 //                    drive.flipperDown();
 //                }
 
-                if (gamepad2.right_bumper){
+                if (gamepad2.left_bumper){
                     drive.openLeftClaw();
                 }
                 else
                 {
                     drive.closeLeftClaw();
                 }
-                if (gamepad2.left_bumper){
+                if (gamepad2.right_bumper){
                     drive.openRightClaw();
                 }
                 else
@@ -248,29 +253,6 @@ public class ILTele extends LinearOpMode {
                     drive.winch.setPower(0);
                 }
 
-                if (gamepad1.y){
-                    safe_mode_drive = !safe_mode_drive;
-                }
-//                    drive.rightFront.setPower(0.5);
-//                    drive.rightRear.setPower(-0.9);
-//                    drive.leftFront.setPower(-0.5);
-//                    drive.leftRear.setPower(0.5);
-//                } else if (gamepad1.x) {
-//                    drive.rightFront.setPower(-0.5);
-//                    drive.rightRear.setPower(0.6);
-//                    drive.leftFront.setPower(0.5);
-//                    drive.leftRear.setPower(-0.5);
-//                } else {
-//                    drive.setWeightedDrivePower(
-//                            new Pose2d(
-//                                    -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
-//                                    -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
-//                                    -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * 0.7 * (gamepad1.right_trigger > 0.05 ? 1 : 0.7)
-//                            ));
-//                }
-
-                // Read pose
-                Pose2d poseEstimate = drive.getPoseEstimate();
             }
         }
     }

@@ -23,7 +23,7 @@ public class ArmTuner extends LinearOpMode {
     public static double kA = 0;
     public static double kStatic = 0;
     public static double MAX_VEL = 0;
-    public static double kG = 0;
+    public static double kG = 0.08;
     public static double target = 0;
     public static double ticks_per_deg = 752/360;
     public static PIDCoefficients ARM_PID = new PIDCoefficients(kP, kI, kD);
@@ -35,6 +35,7 @@ public class ArmTuner extends LinearOpMode {
         drive = new NamjoonDrive(hardwareMap);
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
+        double initialLinearPos = drive.spoolEncoder.getCurrentPosition();
         waitForStart();
         if (isStopRequested()) return;
 
@@ -46,15 +47,26 @@ public class ArmTuner extends LinearOpMode {
                 ARM_CONTROLLER = new PIDFController(ARM_PID, kA, kV, kStatic);
             }
 
-            double armPosition = drive.chains.getCurrentPosition();
+            double spoolpos = drive.spoolEncoder.getCurrentPosition() - initialLinearPos;
+            if (spoolpos <= 0) spoolpos = 1;
+            spoolpos /= 1100;
+            spoolpos += 1;
+            double armPosition = -drive.chains.getCurrentPosition();
+            if (armPosition <= 0) armPosition = 1;
             double armVelocity = drive.chains.getVelocity();
             double correction = ARM_CONTROLLER.update(armPosition, armVelocity);
-            double feedforward = Math.cos(Math.toRadians(target / ticks_per_deg)) * drive.spool.getCurrentPosition() * kG;
+            double feedforward = -Math.cos(Math.toRadians((armPosition/5.6) - 60)) * spoolpos * kG;
             drive.chains.setPower(feedforward + correction);
 
-            telemetry.addData("pos: ", armPosition);
+            telemetry.addData("pos: ", (armPosition/5.6) - 60);
+            telemetry.addData("pos fr: ", armPosition);
+            telemetry.addData("correction", correction);
+            telemetry.addData("feedforward", feedforward);
             telemetry.addData("target: ", target);
+            telemetry.addData("shit is ass", spoolpos);
             telemetry.update();
+
+//            ARM_CONTROLLER.setTargetPosition(ar);
 
             if (gamepad1.y)
             {

@@ -166,7 +166,7 @@ public class BlueILTClose extends LinearOpMode {
 
                         //we do these seperately to make sure we arent moving the robot with too much inertia
                         drive.LINEAR_CONTROLLER.setTargetPosition(700);
-                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
+//                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
 
 
                         drive.followTrajectorySequenceAsync(goToBoardCenter);
@@ -191,7 +191,7 @@ public class BlueILTClose extends LinearOpMode {
                         if(Math.abs(drive.chains.getCurrentPosition() + 600) > 30) break;
 
                         drive.LINEAR_CONTROLLER.setTargetPosition(50);
-                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 50) > 30) break;
+//                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 50) > 30) break;
                         actionIndex++;
                         break;
                     case 5:
@@ -205,7 +205,7 @@ public class BlueILTClose extends LinearOpMode {
                     default:
                         break;
                 }
-                drive.updateAllPIDs();
+//                drive.updateAllPIDs();
                 drive.update();
 
             }
@@ -283,7 +283,7 @@ public class BlueILTClose extends LinearOpMode {
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
                         break;
                 }
-                drive.updateAllPIDs();
+//                drive.updateAllPIDs();
                 drive.update();
 
             }
@@ -369,7 +369,7 @@ public class BlueILTClose extends LinearOpMode {
                         break;
 
                 }
-                drive.updateAllPIDs();
+//                drive.updateAllPIDs();
                 drive.update();
             }
         }

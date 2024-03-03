@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.S
 import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.SiddyPosition.LEFT;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.SiddyPosition.RIGHT;
 
+import android.annotation.SuppressLint;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -45,6 +47,7 @@ public class ILTMain extends LinearOpMode {
 
 //    SiddyDetector SiddyPosition = null;
 
+    @SuppressLint("SuspiciousIndentation")
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -90,24 +93,14 @@ public class ILTMain extends LinearOpMode {
                         NamjoonDrive.getVelocityConstraint(15, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
-                .addDisplacementMarker(30,()->{
-//                    drive.leftRear.setPower(0);
-//                    drive.leftFront.setPower(0);
-//                    drive.rightFront.setPower(0);
-//                    drive.rightRear.setPower(0);
-                    drive.clawFlipper.setPosition(0.5);
-                    drive.clawLeft.setPosition(0.15);
-                    drive.clawRight.setPosition(0.15);
-                    //drive.clawFlipper.setPosition(0.4);
-                })
+                .build();
+
+        Trajectory dropPurpleMidPartTwo = drive.trajectoryBuilder(dropPurpleMid.end())
                 .splineToConstantHeading(
                         new Vector2d(-40,-45),m(90),
                         NamjoonDrive.getVelocityConstraint(10, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
-                .addDisplacementMarker(32,()->{
-                    drive.clawFlipper.setPosition(0.4);
-                })
                 .splineToSplineHeading(
                         new Pose2d(-45,-39,m(180)),m(180),
                         NamjoonDrive.getVelocityConstraint(10, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
@@ -115,17 +108,17 @@ public class ILTMain extends LinearOpMode {
                 )
                 .build();
 
-        Trajectory pickUpWhiteMid = drive.trajectoryBuilder(dropPurpleMid.end(), m(180))
+        Trajectory pickUpWhiteMid = drive.trajectoryBuilder(dropPurpleMidPartTwo.end(), m(180))
                 .splineTo(
                         new Vector2d(-61,-37),m(180),
                         NamjoonDrive.getVelocityConstraint(15, NamjoonDriveConstants.MAX_ANG_VEL, NamjoonDriveConstants.TRACK_WIDTH),
                         NamjoonDrive.getAccelerationConstraint(NamjoonDriveConstants.MAX_ACCEL)
                 )
-                .addDisplacementMarker(15,()->{
-                    drive.clawFlipper.setPosition(0.5);
-                    drive.clawLeft.setPosition(0.15);
-                    drive.clawRight.setPosition(0.8);
-                })
+//                .addDisplacementMarker(15,()->{
+//                    drive.clawFlipper.setPosition(0.5);
+//                    drive.clawLeft.setPosition(0.15);
+//                    drive.clawRight.setPosition(0.8);
+//                })
                 .build();
 
         Trajectory dropYellowWhiteMid = drive.trajectoryBuilder(pickUpWhiteMid.end(),m(0))
@@ -164,66 +157,204 @@ public class ILTMain extends LinearOpMode {
            // drive.clawLeft.setPosition(0.15);
             //drive.clawRight.setPosition(0.8);
            // drive.spool.setPower(-0.05);
+        waitForStart();
+        if(isStopRequested()) return;
 
-           if (vision.location == LEFT){
+        //init stuff
+        drive.closeLeftClaw();
+        drive.closeRightClaw();
+        drive.flipperUp();
+        drive.ARM_CONTROLLER.setTargetPosition(-100);
+
+        if (vision.location == CENTER)
+        {
+            int actionIndex = 1;
+            drive.followTrajectoryAsync(dropPurpleMid);
+
+            while (opModeIsActive() && !isStopRequested()) {
+                switch (actionIndex) {
+                    case 1:
+                        //even though we start at one we have to wait for
+                        //once previous trajectory is complete
+                        if (!drive.isBusy()) {
+                            //update the ticker to go to the next action, where we may or may not wait for this trajectory to complete
+                            drive.flipperDown();
+                            sleep(1000);
+                            drive.openRightClaw();
+                            //claws are mentally challenged and need a second to go up/down. Since we have no PID updates at this time this is fine
+                            // THIS WILL NOT WORK IN ALL SITUATIONS IT ONLY WORKS BECAUSE THERES NO PID UPDATES SO WE CAN STOP PID FOR A SECOND
+                            sleep(1000);
+                            drive.flipperUp();
+                            drive.closeRightClaw();
+                            sleep(1000);
+                            actionIndex++;
+                        }
+                        break;
+                    case 2:
+                        //this is the same as the previous if statement but cleaner
+                        if (drive.isBusy()) break;
+                        //wait for the arm to get in position before moving, bc we have no pid correction ann we cannot lift up while moving
+                        // our wheels do not have enough torque
+//                        drive.ARM_CONTROLLER.setTargetPosition(-1100);
+//                        if(Math.abs(drive.chains.getCurrentPosition() + 1100) > 30) break;
+//
+//                        //we do these seperately to make sure we arent moving the robot with too much inertia
+//                        drive.LINEAR_CONTROLLER.setTargetPosition(700);
+//                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
+//
+//
+                        drive.followTrajectoryAsync(dropPurpleMidPartTwo);
+                        //the reason we do this is because we only want to call followTrajectorySequence once, so instead of redoing the loop we can move onto the next
+                        //one and wait for drive to be unbusy
+                        actionIndex++;
+                        break;
+                    case 3:
+                        //this is the same as the previous if statement but cleaner
+                        if (drive.isBusy()) break;
+                        //wait for the arm to get in position before moving, bc we have no pid correction ann we cannot lift up while moving
+                        // our wheels do not have enough torque
+                        drive.ARM_CONTROLLER.setTargetPosition(-300);
+                        if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
 
 
+                        drive.followTrajectoryAsync(pickUpWhiteMid);
 
-           } else if (vision.location == CENTER){
-                //fsm
-               //TODO: make a finite state machine class and clean this up
-               while(opModeIsActive() && !isStopRequested())
-               {
-                   telemetry.addData("drive busy: ", drive.isBusy());
-                   telemetry.addData("action: ", actionIndex);
-                   switch (actionIndex) {
-                       case 0:
-                           if (drive.isBusy()) break;
-                           actionIndex++;
-                           controller.setTargetPosition(-200);
-                           drive.followTrajectoryAsync(dropPurpleMid);
-                           break;
+                        if (!drive.isBusy()) {
+                            drive.openRightClaw();
+                            drive.flipperDown();
+                            drive.ARM_CONTROLLER.setTargetPosition(-200);
+                            if(Math.abs(drive.chains.getCurrentPosition() + 200) > 30) break;
+                        }
+                        //the reason we do this is because we only want to call followTrajectorySequence once, so instead of redoing the loop we can move onto the next
+                        //one and wait for drive to be unbusy
+                        actionIndex++;
+                        break;
+                }
+                drive.updateAllPIDs();
+                drive.update();
 
-                       case 1:
-                           if (drive.isBusy()) break;
-                           actionIndex++;
-                           drive.followTrajectoryAsync(pickUpWhiteMid);
-                           break;
+            }
+        }
+        else if (vision.location == RIGHT)
+        {
+            int actionIndex = 1;
+          //  drive.followTrajectorySequenceAsync(dropPurpleRight);
 
-                       case 2:
-                           if (drive.isBusy()) break;
-                           actionIndex++;
-                           drive.followTrajectoryAsync(dropYellowWhiteMid);
-                           break;
+            while (opModeIsActive() && !isStopRequested()) {
+                switch (actionIndex)
+                {
+                    case 1:
+                        //even though we start at one we have to wait for
+                        //once previous trajectory is complete
+                        if (drive.isBusy()) break;
+                        //update the ticker to go to the next action, where we may or may not wait for this trajectory to complete
+                        drive.flipperDown();
+                        sleep(1000);
+                        drive.openRightClaw();
+                        //claws are mentally challenged and need a second to go up/down. Since we have no PID updates at this time this is fine
+                        // THIS WILL NOT WORK IN ALL SITUATIONS IT ONLY WORKS BECAUSE THERES NO PID UPDATES SO WE CAN STOP PID FOR A SECOND
+                        sleep(1000);
+                        drive.flipperUp();
+                        drive.closeRightClaw();
+                        sleep(1000);
+                        actionIndex++;
 
-                       default:
-                           break;
-                   }
-                   int armPos = drive.chains.getCurrentPosition();
-                   double correction = controller.update(armPos);
+                        break;
+                }
+                drive.updateAllPIDs();
+                drive.update();
 
-                   drive.chains.setPower(correction);
-                   drive.update();
-               }
-               // drive.clawFlipper.setPosition(0.87);
-//               sleep(1000);
-               // flippy(-300);
-                   drive.followTrajectory(dropPurpleMid);
-//                   drive.followTrajectory(pickUpWhiteMid);
-//                   drive.followTrajectory(dropYellowWhiteMid);
+            }
 
-//               sleep(1000);
-//               drive.followTrajectory(dropYellowWhiteMid);
-//               drive.clawFlipper.setPosition(0.5);
-//               drive.claw.setPosition(0);
+        }
 
-           } else if (vision.location == RIGHT){
+        else if (vision.location == LEFT)
+        {
+            int actionIndex = 1;
+           // drive.followTrajectorySequenceAsync(dropPurpleLeft);
 
+            while (opModeIsActive() && !isStopRequested()) {
+                switch (actionIndex) {
+                    case 1:
+                        //even though we start at one we have to wait for
+                        //once previous trajectory is complete
+                        if (!drive.isBusy()) {
+                            //update the ticker to go to the next action, where we may or may not wait for this trajectory to complete
+                            drive.flipperDown();
+                            sleep(1000);
+                            drive.openRightClaw();
+                            //claws are mentally challenged and need a second to go up/down. Since we have no PID updates at this time this is fine
+                            // THIS WILL NOT WORK IN ALL SITUATIONS IT ONLY WORKS BECAUSE THERES NO PID UPDATES SO WE CAN STOP PID FOR A SECOND
+                            sleep(1000);
+                            drive.flipperUp();
+                            drive.closeRightClaw();
+                            sleep(1000);
+                            actionIndex++;
+                        }
+                        break;
+                }
+                drive.updateAllPIDs();
+                drive.update();
 
-
-           } else {
-
-
+//           if (vision.location == LEFT){
+//
+//
+//
+//           } else if (vision.location == CENTER){
+//                //fsm
+//               //TODO: make a finite state machine class and clean this up
+//               while(opModeIsActive() && !isStopRequested())
+//               {
+//                   telemetry.addData("drive busy: ", drive.isBusy());
+//                   telemetry.addData("action: ", actionIndex);
+//                   switch (actionIndex) {
+//                       case 0:
+//                           if (drive.isBusy()) break;
+//                           actionIndex++;
+//                           controller.setTargetPosition(-200);
+//                           drive.followTrajectoryAsync(dropPurpleMid);
+//                           break;
+//
+//                       case 1:
+//                           if (drive.isBusy()) break;
+//                           actionIndex++;
+//                           drive.followTrajectoryAsync(pickUpWhiteMid);
+//                           break;
+//
+//                       case 2:
+//                           if (drive.isBusy()) break;
+//                           actionIndex++;
+//                           drive.followTrajectoryAsync(dropYellowWhiteMid);
+//                           break;
+//
+//                       default:
+//                           break;
+//                   }
+//                   int armPos = drive.chains.getCurrentPosition();
+//                   double correction = controller.update(armPos);
+//
+//                   drive.chains.setPower(correction);
+//                   drive.update();
+//               }
+//               // drive.clawFlipper.setPosition(0.87);
+////               sleep(1000);
+//               // flippy(-300);
+//                   drive.followTrajectory(dropPurpleMid);
+////                   drive.followTrajectory(pickUpWhiteMid);
+////                   drive.followTrajectory(dropYellowWhiteMid);
+//
+////               sleep(1000);
+////               drive.followTrajectory(dropYellowWhiteMid);
+////               drive.clawFlipper.setPosition(0.5);
+////               drive.claw.setPosition(0);
+//
+//           } else if (vision.location == RIGHT){
+//
+//
+//
+//           } else {
+//
+//
 
            }
 
@@ -231,6 +362,7 @@ public class ILTMain extends LinearOpMode {
           //  drive.followTrajectory(backToStartMiddle);
 //        drive.followTrajectorySequence(toMiddleSequence);
 
+    }
     }
 
     public static double m (double degrees){

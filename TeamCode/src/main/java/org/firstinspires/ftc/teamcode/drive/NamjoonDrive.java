@@ -33,6 +33,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,6 +43,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.teamcode.drive.opmode.Utils.MathUtils;
 import org.firstinspires.ftc.teamcode.drive.templates.BigNamjoonLocalizer;
 import org.firstinspires.ftc.teamcode.drive.NamjoonDriveConstants;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -59,8 +62,8 @@ import java.util.List;
  */
 @Config
 public class NamjoonDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.5,0,1);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.6,0,1);//8,0,1);//(5 , 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12.5,0,1);//(3,0,1)(8,0,1);//(2.5, 0, 1.5); 3,0,1 but it broke life
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(15,0,1);//8,0,1);//(5 , 0, 1);
     public static PIDCoefficients ARM_PID = new PIDCoefficients(0.01, 0, 0.0001);
     public static PIDCoefficients LINEAR_PID = new PIDCoefficients(0.01, 0, 0.0001);
     public static PIDFController ARM_CONTROLLER = new PIDFController(ARM_PID);
@@ -70,10 +73,15 @@ public class NamjoonDrive extends MecanumDrive {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+
+    public static double MAX_VEL_CHANGABLE = MAX_VEL;
+    public static double MAX_ACC_CHANGABLE = MAX_ACCEL;
+    public static double MAX_ANG_VEL_CHANGABLE = MAX_ANG_VEL;//Math.toRadians(220.1650190537944);
+    public static double MAX_ANG_ACC_CHANGABLE = MAX_ANG_ACCEL;//Math.toRadians(220.1650190537944);
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
-    private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
-    private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
+    private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL_CHANGABLE, MAX_ANG_VEL_CHANGABLE, TRACK_WIDTH);
+    private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACC_CHANGABLE);
 
     private TrajectoryFollower follower;
     int targetDist = 0;
@@ -84,7 +92,7 @@ public class NamjoonDrive extends MecanumDrive {
     public DcMotorEx chains;
     public Servo clawLeft;
     public Servo clawRight;
-
+    public ColorSensor backDistanceSensor;
     public Servo clawFlipper;
     public Servo plane;
 
@@ -151,6 +159,7 @@ public class NamjoonDrive extends MecanumDrive {
         clawFlipper = hardwareMap.get(Servo.class,"clawFlipper");
         spoolEncoder = new Encoder(hardwareMap.get(DcMotorEx.class,"leftFront"));
         winch = hardwareMap.get(DcMotorEx.class, "winch");
+        backDistanceSensor = hardwareMap.get(ColorSensor.class, "backSensor");
 
         plane = hardwareMap.get(Servo.class, "plane");
 //        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -217,9 +226,10 @@ public class NamjoonDrive extends MecanumDrive {
         return new TrajectoryBuilder(startPose, reversed, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
 
+
     public void openLeftClaw()
     {
-        openLeftClaw(.5);
+        openLeftClaw(0.2);
     }
 
     public void openLeftClaw(double position)
@@ -229,7 +239,7 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void openRightClaw()
     {
-        openRightClaw(0.4);
+        openRightClaw(1);
     }
 
     public void openRightClaw(double position)
@@ -239,7 +249,7 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void closeLeftClaw()
     {
-        closeLeftClaw(0);
+        closeLeftClaw(0.65);
     }
 
     public void closeLeftClaw(double position)
@@ -249,7 +259,21 @@ public class NamjoonDrive extends MecanumDrive {
 
     public void closeRightClaw()
     {
-        closeRightClaw(.9);
+        closeRightClaw(0.65);
+    }
+
+    public void fastMode (){
+        MAX_ANG_ACC_CHANGABLE = Math.toRadians(382.81942382812497);
+        MAX_ANG_VEL_CHANGABLE = Math.toRadians(382.81942382812497);
+        MAX_ACC_CHANGABLE = 82;
+        MAX_VEL_CHANGABLE = 82;
+    }
+
+    public void slowMode () {
+        MAX_ANG_ACC_CHANGABLE = MAX_ANG_ACCEL;
+        MAX_ANG_VEL_CHANGABLE = MAX_ANG_VEL;
+        MAX_ACC_CHANGABLE = MAX_ACCEL;
+        MAX_VEL_CHANGABLE = MAX_VEL;
     }
 
     public void flipperUp()
@@ -289,7 +313,7 @@ public class NamjoonDrive extends MecanumDrive {
         return new TrajectorySequenceBuilder(
                 startPose,
                 VEL_CONSTRAINT, ACCEL_CONSTRAINT,
-                MAX_ANG_VEL, MAX_ANG_ACCEL
+                MAX_ANG_VEL_CHANGABLE, MAX_ANG_ACC_CHANGABLE
         );
     }
 
@@ -336,6 +360,7 @@ public class NamjoonDrive extends MecanumDrive {
     {
         int armPos = chains.getCurrentPosition();
         double correction = ARM_CONTROLLER.update(armPos);
+        correction = MathUtils.clamp(correction, -0.7, 0.7);
         chains.setPower(correction);
     }
     public void updateLinearPID()
