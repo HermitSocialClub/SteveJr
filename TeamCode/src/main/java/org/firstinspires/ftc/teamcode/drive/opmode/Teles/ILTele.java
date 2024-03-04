@@ -23,6 +23,7 @@ import kotlin.Unit;
 
 @TeleOp (name = "ILTele", group = "Elliot")
 public class ILTele extends LinearOpMode {
+  //initialize/import hardware stuff
     NamjoonDrive drive;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -41,6 +42,7 @@ public class ILTele extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new NamjoonDrive(hardwareMap);
+        //resets pose for roadrunner
         drive.setPoseEstimate(new Pose2d(0, 0, 0));
         ElapsedTime opmodeRunTime = new ElapsedTime();
         flipperPosition = drive.clawFlipper.getPosition() / 0.5;
@@ -65,17 +67,21 @@ public class ILTele extends LinearOpMode {
                 winchTime = !winchTime;
             }
 
+        //moves flippy arm with PID
             if (gamepad2.right_stick_y >= 0.1){
                 armTarget += 20;
             } else if (gamepad2.right_stick_y <= -0.1){
                 armTarget -= 20;
             }
+
+            //moves linears with PID
             if (gamepad2.left_stick_y >= 0.1){
                 linearTarget -= 20;
             } else if (gamepad2.left_stick_y <= -0.1){
                 linearTarget += 20;
             }
 
+            //sets move limits on arm and linear
             if (safe_mode)
             {
                 if (armTarget >= -30) {armTarget = -30;}
@@ -93,7 +99,7 @@ public class ILTele extends LinearOpMode {
             drive.LINEAR_CONTROLLER.setTargetPosition(linearTarget);
 
 
-
+//cue telemetry madness
             int lF = drive.leftFront.getCurrentPosition();
             int lR = drive.leftRear.getCurrentPosition();
             int rR = drive.rightRear.getCurrentPosition();
@@ -129,6 +135,7 @@ public class ILTele extends LinearOpMode {
                 telemetry.addData("rightRearVolt",drive.rightRear.getCurrent(CurrentUnit.AMPS));
             }
 
+        //manually changes the MAX_VELO and other constraints in the drive file to allow for faster tele
             if (gamepad1.a){
                iAmSpeed = true;
             } else if (gamepad1.b) {
@@ -146,7 +153,15 @@ public class ILTele extends LinearOpMode {
                 clawOnFloorTicks = drive.chains.getCurrentPosition();
 //                debugMode = !debugMode;
             }
-            
+
+            //cue strafe checking madness. We found when our robot goes forward,
+            // the front two wheels tend to go a bit slower when everything is powered the same,
+            // so we manually accounted for that in the testing phase with the dpads. We tried making the front wheels a bit faster like this
+            // to account in strafing too, but it didn't work. However, our robot had been consistently going diagonal in this direction ( \ )
+            // going diagonal up left when strafe left and diagonal down right when strafe right. So we thought our back left and front right wheels
+            // were going faster, so we accounted for that in the d-pad testing phase and it didn't make much of a difference. We also added weight to
+            // the opposite two wheels in case the reason they were going "slower" was bc they weren't touching the ground as much, and that made some
+            // but not enough change, and then here we are now:
             if (gamepad1.dpad_left){
                 drive.leftFront.setPower(-0.725);
                 drive.leftRear.setPower(0.65);
@@ -168,7 +183,7 @@ public class ILTele extends LinearOpMode {
                 drive.rightFront.setPower(-0.52);
                 drive.rightRear.setPower(-0.5);
             }
-            else {
+            else { //roadrunner Tele code !! in basics: x is forward back, y is strafe, heading is turning and safe mode turns off strafe bc aditya
                 drive.setWeightedDrivePower(
                         new Pose2d(
                                 -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6),
