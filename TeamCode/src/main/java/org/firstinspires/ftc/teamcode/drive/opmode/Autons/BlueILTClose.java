@@ -99,7 +99,7 @@ public class BlueILTClose extends LinearOpMode {
                 //.back(3)
                 .turn(m(-90))
                // .strafeLeft(10)
-                .back(26)
+                .back(35)
                 .strafeLeft(3)
                 .build();
 
@@ -308,9 +308,6 @@ public class BlueILTClose extends LinearOpMode {
                         drive.ARM_CONTROLLER.setTargetPosition(-600);
                         if(Math.abs(drive.chains.getCurrentPosition() + 600) > 30) break;
 
-                       drive.LINEAR_CONTROLLER.setTargetPosition(80);
-                       if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 80) > 30) break;
-                        actionIndex++;
                         break;
                     case 5:
                         //we do this seperate from the last one because since its a loop it tries to set arm pos to -700 and then -100 right away every
@@ -319,10 +316,6 @@ public class BlueILTClose extends LinearOpMode {
                         // with sleep the PID shits itself
                         drive.ARM_CONTROLLER.setTargetPosition(-300);
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
-
-                        drive.LINEAR_CONTROLLER.setTargetPosition(10);
-                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 10) > 30) break;
-                        actionIndex++;
                         break;
                 }
                 drive.updateAllPIDs();
