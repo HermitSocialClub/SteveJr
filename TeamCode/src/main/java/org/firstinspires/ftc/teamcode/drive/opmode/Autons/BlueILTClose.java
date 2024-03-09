@@ -66,15 +66,15 @@ public class BlueILTClose extends LinearOpMode {
         TrajectorySequence dropPurpleMid = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(35)
-                .back(11)
+                .back(11) //try 10 just in case
                 .build();
 
         TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(15)
                 .strafeLeft(4)
-                .forward(25)
-                .back(20)
+                .forward(20) //25 old number
+                .back(17) //20 old number
                 .build();
 
         TrajectorySequence dropPurpleRight = drive.trajectorySequenceBuilder(startLine)
@@ -82,15 +82,15 @@ public class BlueILTClose extends LinearOpMode {
                 .forward(25)
                 .turn(m(-90))
                 .forward(15)
-                .back(13)
+                .back(15) //13
 //                .ba9-ck(20)
-                .turn(m(30))
+                //.turn(m(30))
                 .build();
 
         TrajectorySequence goToBoardRightIntermediate = drive.trajectorySequenceBuilder(dropPurpleRight.end())
                 .setVelConstraint(velocityConstraint)
-                .turn(m(60))
-                .forward(4)
+                //.turn(m(60))
+               // .forward(4)
                 .turn(m(-90))
                 .build();
 
@@ -100,7 +100,7 @@ public class BlueILTClose extends LinearOpMode {
                 .turn(m(-90))
                // .strafeLeft(10)
                 .back(26)
-                .strafeLeft(3)
+              //  .strafeLeft(3)
                 .build();
 
         TrajectorySequence goToBoardCenter = drive.trajectorySequenceBuilder(dropPurpleMid.end())
@@ -123,7 +123,7 @@ public class BlueILTClose extends LinearOpMode {
                 .build();
 
 
-        TrajectorySequence goToBoardRight = drive.trajectorySequenceBuilder(goToBoardRightIntermediate.end())
+        TrajectorySequence goToBoardRight = drive.trajectorySequenceBuilder(dropPurpleRight.end())
                 .setVelConstraint(velocityConstraint)
                 .back(37)
                 .build();
@@ -356,12 +356,12 @@ public class BlueILTClose extends LinearOpMode {
                             actionIndex++;
                         }
                         break;
+//                    case 2:
+//                        if (drive.isBusy()) break;
+//                        drive.followTrajectorySequenceAsync(goToBoardRightIntermediate);
+//                        actionIndex++;
+//                        break;
                     case 2:
-                        if (drive.isBusy()) break;
-                        drive.followTrajectorySequenceAsync(goToBoardRightIntermediate);
-                        actionIndex++;
-                        break;
-                    case 3:
                         //this is the same as the previous if statement but cleaner
                         if (drive.isBusy()) break;
                         //wait for the arm to get in position before moving, bc we have no pid correction ann we cannot lift up while moving
@@ -379,7 +379,7 @@ public class BlueILTClose extends LinearOpMode {
                         //one and wait for drive to be unbusy
                         actionIndex++;
                         break;
-                    case 4:
+                    case 3:
                         if (drive.isBusy()) break;
                         drive.setFlipperPosition(0.15);
                         sleep(1000);
@@ -390,7 +390,7 @@ public class BlueILTClose extends LinearOpMode {
 
                         actionIndex++;
                         break;
-                    case 5:
+                    case 4:
                         //no drive trajectories should be running so no drive.isBusy() here needed
                         drive.ARM_CONTROLLER.setTargetPosition(-600);
                         if(Math.abs(drive.chains.getCurrentPosition() + 600) > 30) break;
@@ -399,7 +399,7 @@ public class BlueILTClose extends LinearOpMode {
                         if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 50) > 30) break;
                         actionIndex++;
                         break;
-                    case 6:
+                    case 5:
                         //we do this seperate from the last one because since its a loop it tries to set arm pos to -700 and then -100 right away every
                         // time the loop breaks
                         //sleep(1000); <- the reason we cant use this is because we are running PID stuff right now. So when we turn this thread off
