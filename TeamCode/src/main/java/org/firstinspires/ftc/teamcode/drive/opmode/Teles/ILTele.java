@@ -55,7 +55,10 @@ public class ILTele extends LinearOpMode {
             opmodeRunTime.reset();
 
             drive.updateArmPID();
-            drive.updateLinearPID();
+            if (!winchTime)
+            {
+                drive.updateLinearPID();
+            }
 
             if (gamepad2.x)
             {
@@ -86,13 +89,14 @@ public class ILTele extends LinearOpMode {
             {
                 if (armTarget >= -30) {armTarget = -30;}
                 if (armTarget <= -1150) {armTarget = -1150;}
-                if (linearTarget <= 0) {linearTarget = 0;}
+                if (linearTarget <= -100) {linearTarget = -100;}
                 if (linearTarget >= 990) {linearTarget = 990;}
             }
 
             if (winchTime)
             {
                 linearTarget = 0;
+                drive.spool.setPower(0);
             }
 
             drive.ARM_CONTROLLER.setTargetPosition(armTarget);
@@ -137,9 +141,7 @@ public class ILTele extends LinearOpMode {
 
         //manually changes the MAX_VELO and other constraints in the drive file to allow for faster tele
             if (gamepad1.a){
-               iAmSpeed = true;
-            } else if (gamepad1.b) {
-                iAmSpeed = false;
+               iAmSpeed = !iAmSpeed;
             }
 
             if (iAmSpeed ==true) {
@@ -186,9 +188,9 @@ public class ILTele extends LinearOpMode {
             else { //roadrunner Tele code !! in basics: x is forward back, y is strafe, heading is turning and safe mode turns off strafe bc aditya
                 drive.setWeightedDrivePower(
                         new Pose2d(
-                                -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6),
-                                -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6),
-                                -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.6)
+                                -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
+                                -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
+                                -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.8)
                         ));
             }
 

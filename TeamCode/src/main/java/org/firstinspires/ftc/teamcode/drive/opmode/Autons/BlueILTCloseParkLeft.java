@@ -71,11 +71,10 @@ public class BlueILTCloseParkLeft extends LinearOpMode {
         TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(15)
-                .turn(m(90))
-                .forward(12.5)
-                .turn(m(-90))
+                .strafeLeft(3)
                 .forward(25)
                 .back(20)
+//
                 .build();
 
         TrajectorySequence dropPurpleRight = drive.trajectorySequenceBuilder(startLine)
@@ -83,7 +82,7 @@ public class BlueILTCloseParkLeft extends LinearOpMode {
                 .forward(25)
                 .turn(m(-90))
                 .forward(15)
-                .back(13)
+                .back(11)
 //                .ba9-ck(20)
                 .turn(m(30))
                 .build();
@@ -135,9 +134,9 @@ public class BlueILTCloseParkLeft extends LinearOpMode {
                 .setVelConstraint(velocityConstraint)
                 .forward(10)
                 .turn(m(-90))
-                .back(28)
+                .back(20)
                 .turn(m(90))
-                .back(15)
+                .back(17)
                 .build();
 
         // running vision
@@ -300,8 +299,8 @@ public class BlueILTCloseParkLeft extends LinearOpMode {
                         drive.ARM_CONTROLLER.setTargetPosition(-600);
                         if(Math.abs(drive.chains.getCurrentPosition() + 600) > 30) break;
 
-                        drive.LINEAR_CONTROLLER.setTargetPosition(50);
-                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 50) > 30) break;
+                        drive.LINEAR_CONTROLLER.setTargetPosition(75);
+                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 75) > 30) break;
                         actionIndex++;
                         break;
                     case 5:

@@ -10,13 +10,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NamjoonDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.Utils.MathUtils;
 
 @Config
 @TeleOp(name = "ArmTuner", group = "Elliot")
 public class ArmTuner extends LinearOpMode {
     NamjoonDrive drive;
 
-    public static double kP = 0;
+    public static double kP = 0.0035;
     public static double kI = 0;
     public static double kD = 0;
     public static double kV = 0;
@@ -27,9 +28,9 @@ public class ArmTuner extends LinearOpMode {
     public static double target = 0;
     public static double ticks_per_deg = 752/360;
     public static PIDCoefficients ARM_PID = new PIDCoefficients(kP, kI, kD);
-    public static PIDFController ARM_CONTROLLER = new PIDFController(ARM_PID, kV, kA, kStatic);
+    public static PIDFController ARM_CONTROLLER = new PIDFController(ARM_PID);
     private FtcDashboard dashboard = FtcDashboard.getInstance();
-
+    double lastPower = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new NamjoonDrive(hardwareMap);
@@ -44,7 +45,7 @@ public class ArmTuner extends LinearOpMode {
             {
                 //update PID constants
                 ARM_PID = new PIDCoefficients(kP, kI, kD);
-                ARM_CONTROLLER = new PIDFController(ARM_PID, kA, kV, kStatic);
+                ARM_CONTROLLER = new PIDFController(ARM_PID);
             }
 
             double spoolpos = drive.spoolEncoder.getCurrentPosition() - initialLinearPos;
@@ -54,9 +55,16 @@ public class ArmTuner extends LinearOpMode {
             double armPosition = -drive.chains.getCurrentPosition();
             if (armPosition <= 0) armPosition = 1;
             double armVelocity = drive.chains.getVelocity();
-            double correction = ARM_CONTROLLER.update(armPosition, armVelocity);
+            double correction = ARM_CONTROLLER.update(armPosition);
             double feedforward = -Math.cos(Math.toRadians((armPosition/5.6) - 60)) * spoolpos * kG;
-            drive.chains.setPower(feedforward + correction);
+            double maxDiff = ((feedforward - correction)-lastPower);
+            if (Math.abs(maxDiff) > .07)
+            {
+                double sign = Math.signum(maxDiff);
+                maxDiff = 0.07 * sign;
+            }
+            lastPower += maxDiff;
+            drive.chains.setPower(lastPower);
 
             telemetry.addData("pos: ", (armPosition/5.6) - 60);
             telemetry.addData("pos fr: ", armPosition);
@@ -66,7 +74,7 @@ public class ArmTuner extends LinearOpMode {
             telemetry.addData("shit is ass", spoolpos);
             telemetry.update();
 
-//            ARM_CONTROLLER.setTargetPosition(ar);
+            ARM_CONTROLLER.setTargetPosition(target);
 
             if (gamepad1.y)
             {

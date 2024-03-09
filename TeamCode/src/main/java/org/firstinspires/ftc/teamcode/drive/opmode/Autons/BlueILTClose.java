@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.S
 import static org.firstinspires.ftc.teamcode.drive.opmode.Autons.SiddyDetector.SiddyPosition.RIGHT;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -60,20 +61,18 @@ public class BlueILTClose extends LinearOpMode {
         Pose2d startLine = new Pose2d(-40, -62, Math.toRadians(90));
         drive.setPoseEstimate(startLine);
 
-        TrajectoryVelocityConstraint velocityConstraint = NamjoonDrive.getVelocityConstraint(15, m(150), NamjoonDriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraint = NamjoonDrive.getVelocityConstraint(35, m(150), NamjoonDriveConstants.TRACK_WIDTH);
 
         TrajectorySequence dropPurpleMid = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
-                .forward(37)
-                .back(12)
+                .forward(35)
+                .back(11)
                 .build();
 
         TrajectorySequence dropPurpleLeft = drive.trajectorySequenceBuilder(startLine)
                 .setVelConstraint(velocityConstraint)
                 .forward(15)
-                .turn(m(90))
-                .forward(12.5)
-                .turn(m(-90))
+                .strafeLeft(4)
                 .forward(25)
                 .back(20)
                 .build();
@@ -97,20 +96,49 @@ public class BlueILTClose extends LinearOpMode {
 
         TrajectorySequence goToBoardLeft = drive.trajectorySequenceBuilder(dropPurpleLeft.end())
                 .setVelConstraint(velocityConstraint)
-                .back(3)
+                //.back(3)
                 .turn(m(-90))
-                .back(25)
+               // .strafeLeft(10)
+                .back(26)
+                .strafeLeft(3)
                 .build();
 
         TrajectorySequence goToBoardCenter = drive.trajectorySequenceBuilder(dropPurpleMid.end())
-                .setVelConstraint(velocityConstraint)
+                .setVelConstraint(NamjoonDrive.getVelocityConstraint(30, m(150), NamjoonDriveConstants.TRACK_WIDTH))
                 .turn(m(-90))
-                .back(37)
+                .back(34)
+                .strafeLeft(6)
+                .back(7)
+//                .turn(m(-45))
+//                .back(8)
+//                .turn(m(45))
+//                .back(24)
                 .build();
+
+        TrajectorySequence goParkCenter = drive.trajectorySequenceBuilder(goToBoardCenter.end())
+                .setVelConstraint(velocityConstraint)
+                .forward(4)
+                .turn(m(-90))
+                .forward(26)
+                .build();
+
 
         TrajectorySequence goToBoardRight = drive.trajectorySequenceBuilder(goToBoardRightIntermediate.end())
                 .setVelConstraint(velocityConstraint)
                 .back(37)
+                .build();
+
+        TrajectorySequence goParkRight = drive.trajectorySequenceBuilder(goToBoardRight.end())
+                .setVelConstraint(velocityConstraint)
+                .turn(m(-90))
+                .forward(26)
+                .build();
+
+        TrajectorySequence goParkLeft = drive.trajectorySequenceBuilder(goToBoardLeft.end())
+                .setVelConstraint(velocityConstraint)
+                .forward(4)
+                .turn(m(-90))
+                .forward(26)
                 .build();
 
         // running vision
@@ -161,11 +189,11 @@ public class BlueILTClose extends LinearOpMode {
                         if (drive.isBusy()) break;
                         //wait for the arm to get in position before moving, bc we have no pid correction ann we cannot lift up while moving
                         // our wheels do not have enough torque
-                        drive.ARM_CONTROLLER.setTargetPosition(-1100);
-                        if(Math.abs(drive.chains.getCurrentPosition() + 1100) > 30) break;
+                        drive.ARM_CONTROLLER.setTargetPosition(-1000);
+                        if(Math.abs(drive.chains.getCurrentPosition() + 1000) > 30) break;
 
                         //we do these seperately to make sure we arent moving the robot with too much inertia
-                        drive.LINEAR_CONTROLLER.setTargetPosition(700);
+                       // drive.LINEAR_CONTROLLER.setTargetPosition(200);
 //                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
 
 
@@ -176,7 +204,7 @@ public class BlueILTClose extends LinearOpMode {
                         break;
                     case 3:
                         if (drive.isBusy()) break;
-                        drive.setFlipperPosition(0.15);
+                        drive.setFlipperPosition(0.35);
                         sleep(1000);
                         drive.openLeftClaw();
                         sleep(500);
@@ -187,10 +215,10 @@ public class BlueILTClose extends LinearOpMode {
                         break;
                     case 4:
                         //no drive trajectories should be running so no drive.isBusy() here needed
-                        drive.ARM_CONTROLLER.setTargetPosition(-600);
+                        drive.ARM_CONTROLLER.setTargetPosition(-500);
                         if(Math.abs(drive.chains.getCurrentPosition() + 600) > 30) break;
 
-                        drive.LINEAR_CONTROLLER.setTargetPosition(50);
+                      //  drive.LINEAR_CONTROLLER.setTargetPosition(0);
 //                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 50) > 30) break;
                         actionIndex++;
                         break;
@@ -199,13 +227,23 @@ public class BlueILTClose extends LinearOpMode {
                         // time the loop breaks
                         //sleep(1000); <- the reason we cant use this is because we are running PID stuff right now. So when we turn this thread off
                         // with sleep the PID shits itself
-                        drive.ARM_CONTROLLER.setTargetPosition(-300);
+                        //drive.ARM_CONTROLLER.setTargetPosition(-300);
+                       // if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+                        drive.flipperUp();
+
+//                        drive.ARM_CONTROLLER.setTargetPosition(-300);
+//                        if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+
+                        drive.ARM_CONTROLLER.setTargetPosition(-100);
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+
+                        drive.followTrajectorySequenceAsync(goParkCenter);
+                        actionIndex++;
                         break;
                     default:
                         break;
                 }
-//                drive.updateAllPIDs();
+                drive.updateAllPIDs();
                 drive.update();
 
             }
@@ -245,8 +283,8 @@ public class BlueILTClose extends LinearOpMode {
                         if(Math.abs(drive.chains.getCurrentPosition() + 1100) > 30) break;
 
                         //we do these seperately to make sure we arent moving the robot with too much inertia
-                        drive.LINEAR_CONTROLLER.setTargetPosition(700);
-                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 700) > 30) break;
+                        drive.LINEAR_CONTROLLER.setTargetPosition(100);
+                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 100) > 30) break;
 
 
                         drive.followTrajectorySequenceAsync(goToBoardLeft);
@@ -256,7 +294,7 @@ public class BlueILTClose extends LinearOpMode {
                         break;
                     case 3:
                         if (drive.isBusy()) break;
-                        drive.setFlipperPosition(0.15);
+                        drive.setFlipperPosition(0.4);
                         sleep(1000);
                         drive.openLeftClaw();
                         sleep(500);
@@ -270,8 +308,8 @@ public class BlueILTClose extends LinearOpMode {
                         drive.ARM_CONTROLLER.setTargetPosition(-600);
                         if(Math.abs(drive.chains.getCurrentPosition() + 600) > 30) break;
 
-                        drive.LINEAR_CONTROLLER.setTargetPosition(50);
-                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 50) > 30) break;
+                       drive.LINEAR_CONTROLLER.setTargetPosition(80);
+                       if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 80) > 30) break;
                         actionIndex++;
                         break;
                     case 5:
@@ -281,9 +319,13 @@ public class BlueILTClose extends LinearOpMode {
                         // with sleep the PID shits itself
                         drive.ARM_CONTROLLER.setTargetPosition(-300);
                         if(Math.abs(drive.chains.getCurrentPosition() + 300) > 30) break;
+
+                        drive.LINEAR_CONTROLLER.setTargetPosition(10);
+                        if(Math.abs(drive.spoolEncoder.getCurrentPosition() - 10) > 30) break;
+                        actionIndex++;
                         break;
                 }
-//                drive.updateAllPIDs();
+                drive.updateAllPIDs();
                 drive.update();
 
             }
@@ -369,7 +411,7 @@ public class BlueILTClose extends LinearOpMode {
                         break;
 
                 }
-//                drive.updateAllPIDs();
+                drive.updateAllPIDs();
                 drive.update();
             }
         }

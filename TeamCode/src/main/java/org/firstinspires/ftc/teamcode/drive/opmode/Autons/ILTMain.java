@@ -187,6 +187,9 @@ public class ILTMain extends LinearOpMode {
                             drive.flipperUp();
                             drive.closeRightClaw();
                             sleep(1000);
+
+                            drive.followTrajectoryAsync(dropPurpleMidPartTwo);
+
                             actionIndex++;
                         }
                         break;
