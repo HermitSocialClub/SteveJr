@@ -188,9 +188,9 @@ public class ILTele extends LinearOpMode {
             else { //roadrunner Tele code !! in basics: x is forward back, y is strafe, heading is turning and safe mode turns off strafe bc aditya
                 drive.setWeightedDrivePower(
                         new Pose2d(
-                                -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.9),
-                                -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.9),
-                                -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 1)
+                                -(((Math.abs(gamepad1.left_stick_y) < .2) ? 0 : gamepad1.left_stick_y) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
+                                -((((Math.abs(gamepad1.left_stick_x) < .2) || safe_mode_drive) ? 0 : gamepad1.left_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.7),
+                                -(((Math.abs(gamepad1.right_stick_x) < .2) ? 0 : gamepad1.right_stick_x) / .70) * (gamepad1.right_trigger > 0.05 ? 1 : 0.8)
                         ));
             }
 
